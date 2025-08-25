@@ -1,0 +1,44 @@
+﻿@model RegisterViewModel
+<head>
+    <link href=@Url.Content("~/Styles/app.css") rel="stylesheet" type="text/css"/>
+</head>
+<div class="panel">
+    <form asp-controller="Auth" asp-action="Register" method="post">
+        <input type="hidden" asp-for="ReturnUrl" />
+        <div class="header">Регистрация</div>
+        <div class="block">
+            <label>Логин</label>
+            <input asp-for="Username" class="input" />
+            <span asp-validation-for="Username"></span>
+        </div>
+        <div class="block">
+            <label>Имя</label>
+            <input asp-for="FirstName" class="input" />
+            <span asp-validation-for="FirstName"></span>
+        </div>
+        <div class="block">
+            <label>Фамилия</label>
+            <input asp-for="LastName" class="input" />
+            <span asp-validation-for="LastName"></span>
+        </div>
+        <div class="block">
+            <label>E-mail</label>
+            <input asp-for="Email" class="input" />
+            <span asp-validation-for="Email"></span>
+        </div>
+        <div class="block">
+            <label>Пароль</label>
+            <input asp-for="Password" class="input" />
+            <span asp-validation-for="Password"></span>
+        </div>
+        <div class="block">
+            <label>Подтвердите пароль</label>
+            <input asp-for="ConfirmPassword" class="input" />
+            <span asp-validation-for="ConfirmPassword"></span>
+        </div>
+        <div class="block">
+            <button type="submit" class="button">Зарегистрироваться</button>
+        </div>
+        <a asp-controller="Auth" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl" class="switch-button">Войти</a>
+    </form>
+</div>
