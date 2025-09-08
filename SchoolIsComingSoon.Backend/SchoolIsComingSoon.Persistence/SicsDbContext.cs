@@ -14,12 +14,16 @@ namespace SchoolIsComingSoon.Persistence
         public DbSet<PostFile> Files { get; set; }
         public DbSet<PostImage> Images { get; set; }
         public DbSet<PostCategory> Categories { get; set; }
+        public DbSet<Subscription> Subscriptions { get; set; }
+        public DbSet<CurrentSubscription> CurrentSubscriptions { get; set; }
 
         public SicsDbContext(DbContextOptions<SicsDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new AppUserConfiguration());
+            builder.ApplyConfiguration(new SubscriptionConfiguration());
+            builder.ApplyConfiguration(new CurrentSubscriptionConfiguration());
             builder.ApplyConfiguration(new PostConfiguration());
             builder.ApplyConfiguration(new PostFileConfiguration());
             builder.ApplyConfiguration(new PostImageConfiguration());

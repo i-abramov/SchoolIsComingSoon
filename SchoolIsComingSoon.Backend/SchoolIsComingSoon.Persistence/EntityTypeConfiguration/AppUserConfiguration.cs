@@ -10,6 +10,10 @@ namespace SchoolIsComingSoon.Persistence.EntityTypeConfiguration
         {
             builder.HasKey(user => user.Id);
             builder.HasIndex(user => user.Id).IsUnique();
+            builder
+                .HasOne(user => user.Subscription)
+                .WithOne(subscription => subscription.User)
+                .HasForeignKey<AppUser>(user => user.SubscriptionId);
         }
     }
 }

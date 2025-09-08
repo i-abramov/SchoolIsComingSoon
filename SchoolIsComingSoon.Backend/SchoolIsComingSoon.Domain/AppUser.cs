@@ -1,4 +1,6 @@
-﻿namespace SchoolIsComingSoon.Domain
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SchoolIsComingSoon.Domain
 {
     public class AppUser
     {
@@ -8,6 +10,10 @@
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Role { get; set; }
+
+        public Guid SubscriptionId { get; set; }
+        [ForeignKey("SubscriptionId")]
+        public CurrentSubscription Subscription { get; set; }
 
         public List<Post> Posts { get; set; } = new();
         public List<Comment> Comments { get; set; } = new();

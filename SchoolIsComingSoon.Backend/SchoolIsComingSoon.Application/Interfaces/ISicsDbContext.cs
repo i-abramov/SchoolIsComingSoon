@@ -12,6 +12,8 @@ namespace SchoolIsComingSoon.Application.Interfaces
         DbSet<PostFile> Files { get; set; }
         DbSet<PostImage> Images { get; set; }
         DbSet<PostCategory> Categories { get; set; }
+        DbSet<Subscription> Subscriptions { get; set; }
+        DbSet<CurrentSubscription> CurrentSubscriptions { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

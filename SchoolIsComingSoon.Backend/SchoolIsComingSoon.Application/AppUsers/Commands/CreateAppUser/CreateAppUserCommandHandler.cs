@@ -16,6 +16,25 @@ namespace SchoolIsComingSoon.Application.AppUsers.Commands.CreateAppUser
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(user => user.Id == request.Id);
 
+            Subscription subscription;
+
+            if (request.Role == "Owner" || request.Role == "Admin")
+            {
+                subscription = await _dbContext.Subscriptions.FirstAsync(subscription => subscription.Name == "Максимальная");
+            }
+            else
+            {
+                subscription = await _dbContext.Subscriptions.FirstAsync(subscription => subscription.Name == "Бесплатная");
+            }
+
+            var currentSubscription = new CurrentSubscription()
+            {
+                Id = Guid.NewGuid(),
+                ExpiresAfter = DateTime.MaxValue,
+                UserId = request.Id,
+                SubscriptionId = subscription.Id
+            };
+
             if (user == null)
             {
                 var newUser = new AppUser()
@@ -25,7 +44,8 @@ namespace SchoolIsComingSoon.Application.AppUsers.Commands.CreateAppUser
                     FirstName = request.FirstName,
                     LastName = request.LastName,
                     Email = request.Email,
-                    Role = request.Role
+                    Role = request.Role,
+                    SubscriptionId = currentSubscription.Id
                 };
 
                 await _dbContext.Users.AddAsync(newUser, cancellationToken);
