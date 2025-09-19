@@ -41,7 +41,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({
         localStorage.getItem('isAuthenticated') ? localStorage.getItem('isAuthenticated') === 'true' : false
     );
 
-    let userManager = useRef<UserManager>();
+    let userManager = useRef<UserManager>(null);
     useEffect(() => {
         userManager.current = manager;
         const onUserLoaded = (user: User) => {

@@ -7,6 +7,7 @@ namespace SchoolIsComingSoon.Application.Posts.Queries.GetPostList
     public class PostLookupDto : IMapWith<Post>
     {
         public Guid Id { get; set; }
+        public Guid SubscriptionId { get; set; }
         public string Text { get; set; }
         public string CreationDate { get; set; }
         public string? EditDate { get; set; }
@@ -19,6 +20,8 @@ namespace SchoolIsComingSoon.Application.Posts.Queries.GetPostList
             profile.CreateMap<Post, PostLookupDto>()
                 .ForMember(postDto => postDto.Id,
                     opt => opt.MapFrom(post => post.Id))
+                .ForMember(postDto => postDto.SubscriptionId,
+                    opt => opt.MapFrom(post => post.SubscriptionId))
                 .ForMember(postDto => postDto.Text,
                     opt => opt.MapFrom(post => post.Text))
                 .ForMember(postDto => postDto.CreationDate,

@@ -12,6 +12,9 @@ namespace SchoolIsComingSoon.Domain
         public Guid UserId { get; set; }
         [ForeignKey("UserId")]
         public AppUser AppUser { get; set; }
+        public Guid SubscriptionId { get; set; }
+        [ForeignKey("SubscriptionId")]
+        public Subscription Subscription { get; set; }
 
         public List<Comment> Comments { get; set; } = new();
         public List<Reaction> Reactions { get; set; } = new();

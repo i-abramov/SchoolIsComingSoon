@@ -24,6 +24,7 @@ namespace SchoolIsComingSoon.Application.Posts.Commands.UpdatePost
                 throw new NotFoundException(nameof(Post), request.Id);
             }
 
+            entity.SubscriptionId = request.SubscriptionId;
             entity.Text = request.Text;
             entity.EditDate = DateTime.Now.ToCommentFormat();
 

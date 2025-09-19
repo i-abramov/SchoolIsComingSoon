@@ -7,6 +7,7 @@ namespace SchoolIsComingSoon.Application.Posts.Commands.UpdatePost
         public UpdatePostCommandValidator()
         {
             RuleFor(updatePostCommand => updatePostCommand.UserId).NotEqual(Guid.Empty);
+            RuleFor(updatePostCommand => updatePostCommand.SubscriptionId).NotEqual(Guid.Empty);
             RuleFor(updatePostCommand => updatePostCommand.Id).NotEqual(Guid.Empty);
         }
     }

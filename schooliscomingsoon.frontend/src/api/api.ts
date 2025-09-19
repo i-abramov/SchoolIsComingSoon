@@ -14,10 +14,10 @@ export class Client extends ClientBase {
     getAllComments(postId: string, version: string): Promise<CommentListVm> {
         let url_ = this.baseUrl + "/api/{version}/Comment/{postId}";
         if (postId === undefined || postId === null)
-            throw new Error("The parameter 'postId' must be defined.");
+            throw new globalThis.Error("The parameter 'postId' must be defined.");
         url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
         if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
+            throw new globalThis.Error("The parameter 'version' must be defined.");
         url_ = url_.replace("{version}", encodeURIComponent("" + version));
         url_ = url_.replace(/[?&]$/, "");
 
@@ -61,7 +61,7 @@ export class Client extends ClientBase {
     createComment(version: string, body: CreateCommentDto | undefined): Promise<string> {
         let url_ = this.baseUrl + "/api/{version}/Comment";
         if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
+            throw new globalThis.Error("The parameter 'version' must be defined.");
         url_ = url_.replace("{version}", encodeURIComponent("" + version));
         url_ = url_.replace(/[?&]$/, "");
 
@@ -109,7 +109,7 @@ export class Client extends ClientBase {
     updateComment(version: string, body: UpdateCommentDto | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/{version}/Comment";
         if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
+            throw new globalThis.Error("The parameter 'version' must be defined.");
         url_ = url_.replace("{version}", encodeURIComponent("" + version));
         url_ = url_.replace(/[?&]$/, "");
 
@@ -154,10 +154,10 @@ export class Client extends ClientBase {
     deleteComment(id: string | undefined, version: string): Promise<void> {
         let url_ = this.baseUrl + "/api/{version}/Comment?";
         if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
+            throw new globalThis.Error("The parameter 'version' must be defined.");
         url_ = url_.replace("{version}", encodeURIComponent("" + version));
         if (id === null)
-            throw new Error("The parameter 'id' cannot be null.");
+            throw new globalThis.Error("The parameter 'id' cannot be null.");
         else if (id !== undefined)
             url_ += "id=" + encodeURIComponent("" + id) + "&";
         url_ = url_.replace(/[?&]$/, "");
@@ -199,7 +199,7 @@ export class Client extends ClientBase {
     getAllPosts(version: string): Promise<PostListVm> {
         let url_ = this.baseUrl + "/api/{version}/Post";
         if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
+            throw new globalThis.Error("The parameter 'version' must be defined.");
         url_ = url_.replace("{version}", encodeURIComponent("" + version));
         url_ = url_.replace(/[?&]$/, "");
 
@@ -237,7 +237,7 @@ export class Client extends ClientBase {
     createPost(version: string, body: CreatePostDto | undefined): Promise<string> {
         let url_ = this.baseUrl + "/api/{version}/Post";
         if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
+            throw new globalThis.Error("The parameter 'version' must be defined.");
         url_ = url_.replace("{version}", encodeURIComponent("" + version));
         url_ = url_.replace(/[?&]$/, "");
 
@@ -285,7 +285,7 @@ export class Client extends ClientBase {
     updatePost(version: string, body: UpdatePostDto | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/{version}/Post";
         if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
+            throw new globalThis.Error("The parameter 'version' must be defined.");
         url_ = url_.replace("{version}", encodeURIComponent("" + version));
         url_ = url_.replace(/[?&]$/, "");
 
@@ -330,10 +330,10 @@ export class Client extends ClientBase {
     deletePost(id: string | undefined, version: string): Promise<void> {
         let url_ = this.baseUrl + "/api/{version}/Post?";
         if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
+            throw new globalThis.Error("The parameter 'version' must be defined.");
         url_ = url_.replace("{version}", encodeURIComponent("" + version));
         if (id === null)
-            throw new Error("The parameter 'id' cannot be null.");
+            throw new globalThis.Error("The parameter 'id' cannot be null.");
         else if (id !== undefined)
             url_ += "id=" + encodeURIComponent("" + id) + "&";
         url_ = url_.replace(/[?&]$/, "");
@@ -375,10 +375,10 @@ export class Client extends ClientBase {
     getPost(id: string, version: string): Promise<PostVm> {
         let url_ = this.baseUrl + "/api/{version}/Post/{id}";
         if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
+            throw new globalThis.Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
+            throw new globalThis.Error("The parameter 'version' must be defined.");
         url_ = url_.replace("{version}", encodeURIComponent("" + version));
         url_ = url_.replace(/[?&]$/, "");
 
@@ -416,10 +416,10 @@ export class Client extends ClientBase {
     getAllPostFiles(postId: string, version: string): Promise<PostFileListVm> {
         let url_ = this.baseUrl + "/api/{version}/PostFile/{postId}";
         if (postId === undefined || postId === null)
-            throw new Error("The parameter 'postId' must be defined.");
+            throw new globalThis.Error("The parameter 'postId' must be defined.");
         url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
         if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
+            throw new globalThis.Error("The parameter 'version' must be defined.");
         url_ = url_.replace("{version}", encodeURIComponent("" + version));
         url_ = url_.replace(/[?&]$/, "");
 
@@ -457,7 +457,7 @@ export class Client extends ClientBase {
     createPostFile(version: string, body: CreatePostFileDto | undefined): Promise<string> {
         let url_ = this.baseUrl + "/api/{version}/PostFile";
         if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
+            throw new globalThis.Error("The parameter 'version' must be defined.");
         url_ = url_.replace("{version}", encodeURIComponent("" + version));
         url_ = url_.replace(/[?&]$/, "");
 
@@ -505,10 +505,10 @@ export class Client extends ClientBase {
     deletePostFile(id: string | undefined, version: string): Promise<void> {
         let url_ = this.baseUrl + "/api/{version}/PostFile?";
         if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
+            throw new globalThis.Error("The parameter 'version' must be defined.");
         url_ = url_.replace("{version}", encodeURIComponent("" + version));
         if (id === null)
-            throw new Error("The parameter 'id' cannot be null.");
+            throw new globalThis.Error("The parameter 'id' cannot be null.");
         else if (id !== undefined)
             url_ += "id=" + encodeURIComponent("" + id) + "&";
         url_ = url_.replace(/[?&]$/, "");
@@ -550,10 +550,10 @@ export class Client extends ClientBase {
     getAllPostImages(postId: string, version: string): Promise<PostImageListVm> {
         let url_ = this.baseUrl + "/api/{version}/PostImage/{postId}";
         if (postId === undefined || postId === null)
-            throw new Error("The parameter 'postId' must be defined.");
+            throw new globalThis.Error("The parameter 'postId' must be defined.");
         url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
         if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
+            throw new globalThis.Error("The parameter 'version' must be defined.");
         url_ = url_.replace("{version}", encodeURIComponent("" + version));
         url_ = url_.replace(/[?&]$/, "");
 
@@ -591,7 +591,7 @@ export class Client extends ClientBase {
     createPostImage(version: string, body: CreatePostImageDto | undefined): Promise<string> {
         let url_ = this.baseUrl + "/api/{version}/PostImage";
         if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
+            throw new globalThis.Error("The parameter 'version' must be defined.");
         url_ = url_.replace("{version}", encodeURIComponent("" + version));
         url_ = url_.replace(/[?&]$/, "");
 
@@ -639,10 +639,10 @@ export class Client extends ClientBase {
     deletePostImage(id: string | undefined, version: string): Promise<void> {
         let url_ = this.baseUrl + "/api/{version}/PostImage?";
         if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
+            throw new globalThis.Error("The parameter 'version' must be defined.");
         url_ = url_.replace("{version}", encodeURIComponent("" + version));
         if (id === null)
-            throw new Error("The parameter 'id' cannot be null.");
+            throw new globalThis.Error("The parameter 'id' cannot be null.");
         else if (id !== undefined)
             url_ += "id=" + encodeURIComponent("" + id) + "&";
         url_ = url_.replace(/[?&]$/, "");
@@ -684,10 +684,10 @@ export class Client extends ClientBase {
     getAllReactions(postId: string, version: string): Promise<ReactionListVm> {
         let url_ = this.baseUrl + "/api/{version}/Reaction/{postId}";
         if (postId === undefined || postId === null)
-            throw new Error("The parameter 'postId' must be defined.");
+            throw new globalThis.Error("The parameter 'postId' must be defined.");
         url_ = url_.replace("{postId}", encodeURIComponent("" + postId));
         if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
+            throw new globalThis.Error("The parameter 'version' must be defined.");
         url_ = url_.replace("{version}", encodeURIComponent("" + version));
         url_ = url_.replace(/[?&]$/, "");
 
@@ -725,7 +725,7 @@ export class Client extends ClientBase {
     createReaction(version: string, body: CreateReactionDto | undefined): Promise<string> {
         let url_ = this.baseUrl + "/api/{version}/Reaction";
         if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
+            throw new globalThis.Error("The parameter 'version' must be defined.");
         url_ = url_.replace("{version}", encodeURIComponent("" + version));
         url_ = url_.replace(/[?&]$/, "");
 
@@ -773,10 +773,10 @@ export class Client extends ClientBase {
     deleteReaction(id: string | undefined, version: string): Promise<void> {
         let url_ = this.baseUrl + "/api/{version}/Reaction?";
         if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
+            throw new globalThis.Error("The parameter 'version' must be defined.");
         url_ = url_.replace("{version}", encodeURIComponent("" + version));
         if (id === null)
-            throw new Error("The parameter 'id' cannot be null.");
+            throw new globalThis.Error("The parameter 'id' cannot be null.");
         else if (id !== undefined)
             url_ += "id=" + encodeURIComponent("" + id) + "&";
         url_ = url_.replace(/[?&]$/, "");
@@ -814,6 +814,85 @@ export class Client extends ClientBase {
         }
         return Promise.resolve<void>(null as any);
     }
+
+    getSubscription(id: string, version: string): Promise<SubscriptionVm> {
+        let url_ = this.baseUrl + "/api/{version}/Subscription/{id}";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (version === undefined || version === null)
+            throw new globalThis.Error("The parameter 'version' must be defined.");
+        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetSubscription(_response);
+        });
+    }
+
+    protected processGetSubscription(response: Response): Promise<SubscriptionVm> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as SubscriptionVm;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SubscriptionVm>(null as any);
+    }
+
+    getAllSubscriptions(version: string): Promise<SubscriptionListVm> {
+        let url_ = this.baseUrl + "/api/{version}/Subscription";
+        if (version === undefined || version === null)
+            throw new globalThis.Error("The parameter 'version' must be defined.");
+        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetAllSubscriptions(_response);
+        });
+    }
+
+    protected processGetAllSubscriptions(response: Response): Promise<SubscriptionListVm> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as SubscriptionListVm;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SubscriptionListVm>(null as any);
+    }
 }
 
 export interface CommentListVm {
@@ -836,6 +915,7 @@ export interface CreateCommentDto {
 
 export interface CreatePostDto {
     text: string;
+    subscriptionId: string;
     categories?: string | undefined;
 }
 
@@ -883,6 +963,7 @@ export interface PostListVm {
 
 export interface PostLookupDto {
     id?: string;
+    subscriptionId?: string;
     text?: string | undefined;
     creationDate?: string | undefined;
     editDate?: string | undefined;
@@ -893,6 +974,7 @@ export interface PostLookupDto {
 
 export interface PostVm {
     id?: string;
+    subscriptionId?: string;
     text?: string | undefined;
     creationDate?: string | undefined;
     editDate?: string | undefined;
@@ -920,6 +1002,22 @@ export interface ReactionLookupDto {
     userId?: string;
 }
 
+export interface SubscriptionListVm {
+    subscriptions?: SubscriptionLookupDto[] | undefined;
+}
+
+export interface SubscriptionLookupDto {
+    id?: string;
+    name?: string | undefined;
+    price?: number;
+}
+
+export interface SubscriptionVm {
+    id?: string;
+    name?: string | undefined;
+    price?: number;
+}
+
 export interface UpdateCommentDto {
     id?: string;
     postId?: string;
@@ -928,6 +1026,7 @@ export interface UpdateCommentDto {
 
 export interface UpdatePostDto {
     id?: string;
+    subscriptionId?: string;
     text?: string | undefined;
     categories?: string | undefined;
 }

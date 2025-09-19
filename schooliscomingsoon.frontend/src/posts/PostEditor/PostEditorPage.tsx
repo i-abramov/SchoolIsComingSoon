@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import PostEditorFilePanel from './PostEditorFilePanel';
-import { Client } from '../../api/api';
+import { Client, SubscriptionListVm, SubscriptionLookupDto } from '../../api/api';
 import PostEditorTagPanel from './PostEditorTagPanel';
 import PostEditorTextArea from './PostEditorTextarea';
 import PostEditorToolbar from './PostEditorToolbar';
 import PostEditorImagePanel from './PostEditorImagePanel';
+import PostEditorToggleSwitchPanel from './PostEditorToggleSwitchPanel';
 
 export type FileData = {
     name: string;
@@ -15,6 +16,7 @@ export type FileData = {
 };
 
 export type FormData = {
+    subscriptionId: string;
     text: string;
     files: FileData[];
     images: FileData[];
@@ -41,6 +43,8 @@ export default function PostEditorPage({ onSubmit, postId }: PostProps) {
     const [fileList, setFileList] = useState<FileData[]>([]);
     const [imageList, setImageList] = useState<FileData[]>([]);
     const [categories, setCategories] = useState('');
+    const [subscriptions, setSubscriptions] = useState<SubscriptionLookupDto[]>([]);
+    const [subscriptionId, setSubscriptionId] = useState('');
 
     const fileReader = new FileReader();
     
@@ -141,6 +145,7 @@ export default function PostEditorPage({ onSubmit, postId }: PostProps) {
         else {
 
             onSubmit({
+                subscriptionId: subscriptionId,
                 text: text.value,
                 files: fileList,
                 images: imageList,
@@ -193,6 +198,10 @@ export default function PostEditorPage({ onSubmit, postId }: PostProps) {
                     images.push(filesFromFileReader[filesFromFileReader.length - 1]);
                 }
             }
+
+            let subs = await apiClient.getAllSubscriptions('1.0');
+            setSubscriptions(subs.subscriptions!);
+            setSubscriptionId(subs.subscriptions![0].id!);
     
             setInputText(post.text!);
             setImageList(images);
@@ -212,7 +221,8 @@ export default function PostEditorPage({ onSubmit, postId }: PostProps) {
                     <div className='post_text'>
                         Содержимое:
                     </div>
-
+                    
+                    <PostEditorToggleSwitchPanel subscriptionId={subscriptionId} setSubscriptionId={setSubscriptionId} subscriptions={subscriptions}/>
                     <PostEditorTagPanel categories={categories} setCategories={setCategories}/>
                     <PostEditorImagePanel images={imageList} removeImage={removeImage}/>
                     <PostEditorTextArea text={inputText} readFiles={readFiles}/>

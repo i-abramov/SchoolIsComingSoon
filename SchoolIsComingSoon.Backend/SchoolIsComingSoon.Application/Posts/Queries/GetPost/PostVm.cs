@@ -7,6 +7,7 @@ namespace SchoolIsComingSoon.Application.Posts.Queries.GetPost
     public class PostVm : IMapWith<Post>
     {
         public Guid Id { get; set; }
+        public Guid SubscriptionId { get; set; }
         public string Text { get; set; }
         public string CreationDate { get; set; }
         public string? EditDate { get; set; }
@@ -21,6 +22,8 @@ namespace SchoolIsComingSoon.Application.Posts.Queries.GetPost
                     opt => opt.MapFrom(post => post.Text))
                 .ForMember(postVm => postVm.Id,
                     opt => opt.MapFrom(post => post.Id))
+                .ForMember(postVm => postVm.SubscriptionId,
+                    opt => opt.MapFrom(post => post.SubscriptionId))
                 .ForMember(postVm => postVm.CreationDate,
                     opt => opt.MapFrom(post => post.CreationDate))
                 .ForMember(postVm => postVm.EditDate,

@@ -7,6 +7,7 @@ namespace SchoolIsComingSoon.Application.Posts.Commands.CreatePost
         public CreatePostCommandValidator()
         {
             RuleFor(createPostCommand => createPostCommand.UserId).NotEqual(Guid.Empty);
+            RuleFor(createPostCommand => createPostCommand.SubscriptionId).NotEqual(Guid.Empty);
         }
     }
 }

@@ -6,8 +6,8 @@ import Header from './header/header'
 import PostList from './posts/PostList';
 import PrivateRoute from './routes/private-route'
 import SearchContext from './header/search-provider';
-import { useState } from 'react';
-import { Client, CreatePostDto, CreatePostFileDto, CreatePostImageDto, UpdatePostDto } from './api/api';
+import { useEffect, useState } from 'react';
+import { Client, CreatePostDto, CreatePostFileDto, CreatePostImageDto, SubscriptionListVm, UpdatePostDto } from './api/api';
 import PostByID from './posts/PostByID';
 import PostEditorPage, { FormData } from './posts/PostEditor/PostEditorPage';
 
@@ -15,6 +15,7 @@ const apiClient = new Client('https://localhost:44399');
 
 async function CreatePost(formData: FormData) {
     const createPostDto: CreatePostDto = {
+        subscriptionId: formData.subscriptionId,
         text: formData.text,
         categories: formData.categories
     };
@@ -106,10 +107,20 @@ export default function App() {
                         
                                 <Routes>
                                     <Route element={<PrivateRoute/>}>
-                                        <Route path='/create-post' element={<PostEditorPage onSubmit={onSubmit} postId=''/>}/>
+                                        <Route
+                                            path='/create-post'
+                                            element={<PostEditorPage
+                                            onSubmit={onSubmit}
+                                            postId=''/>}
+                                        />
                                     </Route>
                                     <Route element={<PrivateRoute/>}>
-                                        <Route path='/edit-post' element={<PostEditorPage onSubmit={onEdit} postId={editedPostId}/>}/>
+                                        <Route
+                                            path='/edit-post'
+                                            element={<PostEditorPage
+                                            onSubmit={onEdit}
+                                            postId={editedPostId}/>}
+                                        />
                                     </Route>
                                     <Route path='/' element={<PostList setPostId={setEditedPostId}/>}/>
                                     <Route path='/index' element={<PostList setPostId={setEditedPostId}/>}/>

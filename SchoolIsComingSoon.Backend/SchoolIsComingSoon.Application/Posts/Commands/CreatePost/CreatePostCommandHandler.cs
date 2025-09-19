@@ -19,6 +19,7 @@ namespace SchoolIsComingSoon.Application.Posts.Commands.CreatePost
             var post = new Post()
             {
                 UserId = request.UserId,
+                SubscriptionId = request.SubscriptionId,
                 Text = request.Text,
                 Id = Guid.NewGuid(),
                 CreationDate = DateTime.Now.ToPostFormat(),

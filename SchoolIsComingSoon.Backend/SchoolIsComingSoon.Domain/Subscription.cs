@@ -7,5 +7,6 @@
         public float Price { get; set; }
 
         public List<CurrentSubscription> CurrentSubscriptions { get; set; } = new();
+        public List<Post> Posts { get; set; } = new();
     }
 }

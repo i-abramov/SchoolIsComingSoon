@@ -15,6 +15,10 @@ namespace SchoolIsComingSoon.Persistence.EntityTypeConfiguration
                 .WithMany(user => user.Posts)
                 .HasForeignKey(post => post.UserId);
             builder
+                .HasOne(post => post.Subscription)
+                .WithMany(subscription => subscription.Posts)
+                .HasForeignKey(post => post.SubscriptionId);
+            builder
                 .HasMany(post => post.Categories)
                 .WithMany(category => category.Posts);
         }
