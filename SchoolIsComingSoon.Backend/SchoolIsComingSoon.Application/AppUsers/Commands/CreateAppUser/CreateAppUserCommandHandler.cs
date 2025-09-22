@@ -30,7 +30,7 @@ namespace SchoolIsComingSoon.Application.AppUsers.Commands.CreateAppUser
             var currentSubscription = new CurrentSubscription()
             {
                 Id = Guid.NewGuid(),
-                ExpiresAfter = DateTime.MaxValue,
+                ExpiresAfter = "∞",
                 UserId = request.Id,
                 SubscriptionId = subscription.Id
             };
@@ -48,10 +48,11 @@ namespace SchoolIsComingSoon.Application.AppUsers.Commands.CreateAppUser
                     SubscriptionId = currentSubscription.Id
                 };
 
+                await _dbContext.CurrentSubscriptions.AddAsync(currentSubscription, cancellationToken);
                 await _dbContext.Users.AddAsync(newUser, cancellationToken);
                 await _dbContext.SaveChangesAsync(cancellationToken);
             }
-
+            
             return Unit.Value;
         }
     }

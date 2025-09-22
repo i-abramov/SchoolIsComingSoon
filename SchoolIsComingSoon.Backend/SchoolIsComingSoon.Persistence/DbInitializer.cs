@@ -8,33 +8,32 @@ namespace SchoolIsComingSoon.Persistence
         {
             if (context.Database.EnsureCreated())
             {
-                await context.Subscriptions.AddAsync(
+                await context.Subscriptions.AddRangeAsync(
                     new Subscription()
                     {
                         Name = "Бесплатная",
                         Price = 0,
-                    });
-
-                await context.Subscriptions.AddAsync(
+                        LVL = 0
+                    },
                     new Subscription()
                     {
                         Name = "Базовая",
                         Price = 100,
-                    });
-
-                await context.Subscriptions.AddAsync(
+                        LVL = 1
+                    },
                     new Subscription()
                     {
                         Name = "Продвинутая",
                         Price = 250,
-                    });
-
-                await context.Subscriptions.AddAsync(
+                        LVL = 2
+                    },
                     new Subscription()
                     {
                         Name = "Максимальная",
                         Price = 380,
-                    });
+                        LVL = 3
+                    }
+                    );
 
                 await context.Categories.AddRangeAsync(
                     new PostCategory()

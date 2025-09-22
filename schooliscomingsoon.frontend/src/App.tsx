@@ -6,10 +6,11 @@ import Header from './header/header'
 import PostList from './posts/PostList';
 import PrivateRoute from './routes/private-route'
 import SearchContext from './header/search-provider';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Client, CreatePostDto, CreatePostFileDto, CreatePostImageDto, SubscriptionListVm, UpdatePostDto } from './api/api';
 import PostByID from './posts/PostByID';
 import PostEditorPage, { FormData } from './posts/PostEditor/PostEditorPage';
+import RightMenu from './menu/RightMenu';
 
 const apiClient = new Client('https://localhost:44399');
 
@@ -31,7 +32,8 @@ async function UpdatePost(formData: FormData, postId: string) {
     const updatePostDto: UpdatePostDto = {
         id: postId,
         text: formData.text,
-        categories: formData.categories
+        categories: formData.categories,
+        subscriptionId: formData.subscriptionId
     };
 
     await apiClient.updatePost('1.0', updatePostDto);
@@ -103,7 +105,11 @@ export default function App() {
                     <Header/>
     
                     <div className='page'>
-                        <div className='main_block container'>
+
+                        <div className='left_menu'>
+                        </div>
+                        
+                        <div className='main_block'>
                         
                                 <Routes>
                                     <Route element={<PrivateRoute/>}>
@@ -133,6 +139,9 @@ export default function App() {
                                 </Routes>
                         
                         </div>
+
+                        <RightMenu/>
+
                     </div>
                 </SearchContext.Provider>
             </div>

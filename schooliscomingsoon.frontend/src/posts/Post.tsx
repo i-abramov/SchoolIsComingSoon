@@ -14,8 +14,7 @@ import { useNavigate } from 'react-router-dom';
 const apiClient = new Client('https://localhost:44399');
 
 function Post(props: any) {
-
-    const [imageURL, setImageURL] = useState(`data:image/png;base64,${props.post.images[0].base64Code!}`);
+    const [imageURL, setImageURL] = useState(props.post.preview);
     const [fileList, setFileList] = useState<PostFileLookupDto[]>(props.post.files);
     const [imageList, setImageList] = useState<PostImageLookupDto[]>(props.post.images);
     const [currentId, setCurrentId] = useState(0);
@@ -122,7 +121,7 @@ function Post(props: any) {
                 ?
                     <div className='post_image_block'>
                         <img
-                            src={imageURL ? imageURL : EmptyPreview}
+                            src={imageURL != '' ? imageURL : EmptyPreview}
                             className='post_image_preview'
                         />
                         <button

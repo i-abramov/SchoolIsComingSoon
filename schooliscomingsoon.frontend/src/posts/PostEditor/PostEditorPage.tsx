@@ -143,7 +143,6 @@ export default function PostEditorPage({ onSubmit, postId }: PostProps) {
             alert('Введите текст для создания поста!');
         }
         else {
-
             onSubmit({
                 subscriptionId: subscriptionId,
                 text: text.value,
@@ -201,7 +200,7 @@ export default function PostEditorPage({ onSubmit, postId }: PostProps) {
 
             let subs = await apiClient.getAllSubscriptions('1.0');
             setSubscriptions(subs.subscriptions!);
-            setSubscriptionId(subs.subscriptions![0].id!);
+            setSubscriptionId(post.subscriptionId!);
     
             setInputText(post.text!);
             setImageList(images);

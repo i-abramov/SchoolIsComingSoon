@@ -9,6 +9,7 @@ namespace SchoolIsComingSoon.Application.Subscriptions.Queries.GetSubscription
         public Guid Id { get; set; }
         public string Name { get; set; }
         public float Price { get; set; }
+        public int LVL { get; set; }
 
         public void Mapping(Profile profile)
         {
@@ -18,7 +19,9 @@ namespace SchoolIsComingSoon.Application.Subscriptions.Queries.GetSubscription
                 .ForMember(subscriptionVm => subscriptionVm.Name,
                     opt => opt.MapFrom(subscription => subscription.Name))
                 .ForMember(subscriptionVm => subscriptionVm.Price,
-                    opt => opt.MapFrom(subscription => subscription.Price));
+                    opt => opt.MapFrom(subscription => subscription.Price))
+                .ForMember(subscriptionVm => subscriptionVm.LVL,
+                    opt => opt.MapFrom(subscription => subscription.LVL));
         }
     }
 }

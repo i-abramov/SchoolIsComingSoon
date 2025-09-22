@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { SearchContext } from '../header/search-provider';
 import { AuthContext } from '../auth/auth-provider';
 import Post from './Post';
+import PostWithSub from './PostWithSub';
 
 const apiClient = new Client('https://localhost:44399');
 
@@ -11,6 +12,7 @@ type PostWithFilesAndImages = {
     postDto: PostLookupDto;
     files: PostFileLookupDto[];
     images: PostImageLookupDto[];
+    preview: string;
 };
 
 function PostList(props: any) {
@@ -45,7 +47,8 @@ function PostList(props: any) {
                     const post: PostWithFilesAndImages = {
                         postDto: filteredList[i],
                         files: postFileListVm.files != undefined ? postFileListVm.files : [],
-                        images: postImageListVm.images != undefined ? postImageListVm.images : []
+                        images: postImageListVm.images != undefined ? postImageListVm.images : [],
+                        preview: postImageListVm.images != undefined && postImageListVm.images.length > 0 ? `data:image/png;base64,${postImageListVm.images[0].base64Code!}` : ''
                     };
 
                     postsWithFilesAndImages.push(post);
@@ -69,7 +72,7 @@ function PostList(props: any) {
     return (
         <>
             {posts?.map((post) => (
-                <Post post={post} role={role} setPostId={props.setPostId} isAllCommentsVisible={false}/>
+                <PostWithSub post={post} role={role} setPostId={props.setPostId} isAllCommentsVisible={false}/>
             ))}
         </>
     );

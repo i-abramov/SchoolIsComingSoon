@@ -10,12 +10,17 @@ export default function PostEditorToggleSwitchPanel(props: any) {
     const [subscriptions, setSubscriptions] = useState<SubscriptionLookupDto[]>([]);
 
     const onChangeSub = () => {
-        if (firstLVLSubChecked) {
-            props.setSubscriptionId(subscriptions[1].id);
-        } if (secondLVLSubChecked) {
-            props.setSubscriptionId(subscriptions[2].id);
-        } if (thirdLVLSubChecked) {
-            props.setSubscriptionId(subscriptions[3].id);
+        if (subscriptions.length > 0) {
+            if (firstLVLSubChecked) {
+                props.setSubscriptionId(subscriptions[1].id);
+            } else if (secondLVLSubChecked) {
+                props.setSubscriptionId(subscriptions[2].id);
+            } else if (thirdLVLSubChecked) {
+                props.setSubscriptionId(subscriptions[3].id);
+            }
+            else {
+                props.setSubscriptionId(subscriptions[0].id);
+            }
         }
     }
 
@@ -41,6 +46,7 @@ export default function PostEditorToggleSwitchPanel(props: any) {
         async function getSubs() {
             let subs = await apiClient.getAllSubscriptions('1.0');
             setSubscriptions(subs.subscriptions!);
+            props.setSubscriptionId(subs.subscriptions![0].id);
         }
 
         getSubs();
@@ -49,19 +55,22 @@ export default function PostEditorToggleSwitchPanel(props: any) {
     useEffect(() => {
         onChangeSub();
     }, [firstLVLSubChecked, secondLVLSubChecked, thirdLVLSubChecked]);
-    // не работает!!!
+    
     useEffect(() => {  
-        if (props.subscriptions[1].id == props.subscriptionId) {
-            setFirstLVLSubChecked(true);
+        if (props.subscriptions.length > 0) {
+            if (props.subscriptions[1].id == props.subscriptionId) {
+                setFirstLVLSubChecked(true);
+            }
+            if (props.subscriptions[2].id == props.subscriptionId) {
+                setSecondLVLSubChecked(true);
+            }
+            if (props.subscriptions[3].id == props.subscriptionId) {
+                setThirdLVLSubChecked(true);
+            }
         }
-        if (props.subscriptions[2].id == props.subscriptionId) {
-            setSecondLVLSubChecked(true);
-        }
-        if (props.subscriptions[3].id == props.subscriptionId) {
-            setThirdLVLSubChecked(true);
-        }
+        
     }, [props.subscriptions]);
-    //
+    
     return (
         <div className='switch_buttons'>
 

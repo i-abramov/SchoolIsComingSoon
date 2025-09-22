@@ -5,7 +5,7 @@ namespace SchoolIsComingSoon.Domain
     public class CurrentSubscription
     {
         public Guid Id { get; set; }
-        public DateTime ExpiresAfter { get; set; }
+        public string ExpiresAfter { get; set; }
 
         public Guid UserId { get; set; }
         [ForeignKey("UserId")]

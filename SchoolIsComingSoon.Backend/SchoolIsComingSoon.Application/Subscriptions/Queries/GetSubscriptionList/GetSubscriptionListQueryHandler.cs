@@ -17,6 +17,7 @@ namespace SchoolIsComingSoon.Application.Subscriptions.Queries.GetSubscriptionLi
         public async Task<SubscriptionListVm> Handle(GetSubscriptionListQuery request, CancellationToken cancellationToken)
         {
             var subscriptionQuery = await _dbContext.Subscriptions
+                .OrderBy(sub => sub.LVL)
                 .ProjectTo<SubscriptionLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 

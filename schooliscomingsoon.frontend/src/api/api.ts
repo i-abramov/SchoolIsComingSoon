@@ -196,6 +196,47 @@ export class Client extends ClientBase {
         return Promise.resolve<void>(null as any);
     }
 
+    getCurrentSubscription(userId: string, version: string): Promise<CurrentSubscriptionVm> {
+        let url_ = this.baseUrl + "/api/{version}/CurrentSubscription/{userId}";
+        if (userId === undefined || userId === null)
+            throw new globalThis.Error("The parameter 'userId' must be defined.");
+        url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
+        if (version === undefined || version === null)
+            throw new globalThis.Error("The parameter 'version' must be defined.");
+        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetCurrentSubscription(_response);
+        });
+    }
+
+    protected processGetCurrentSubscription(response: Response): Promise<CurrentSubscriptionVm> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as CurrentSubscriptionVm;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CurrentSubscriptionVm>(null as any);
+    }
+
     getAllPosts(version: string): Promise<PostListVm> {
         let url_ = this.baseUrl + "/api/{version}/Post";
         if (version === undefined || version === null)
@@ -936,6 +977,14 @@ export interface CreateReactionDto {
     postId: string;
 }
 
+export interface CurrentSubscriptionVm {
+    userId?: string;
+    subscriptionId?: string;
+    expiresAfter?: string | undefined;
+    name?: string | undefined;
+    price?: number;
+}
+
 export interface PostFileListVm {
     files?: PostFileLookupDto[] | undefined;
 }
@@ -1010,12 +1059,14 @@ export interface SubscriptionLookupDto {
     id?: string;
     name?: string | undefined;
     price?: number;
+    lvl?: number;
 }
 
 export interface SubscriptionVm {
     id?: string;
     name?: string | undefined;
     price?: number;
+    lvl?: number;
 }
 
 export interface UpdateCommentDto {
@@ -1032,7 +1083,7 @@ export interface UpdatePostDto {
 }
 
 export class ApiException extends Error {
-    message: string;
+    override message: string;
     status: number;
     response: string;
     headers: { [key: string]: any; };
