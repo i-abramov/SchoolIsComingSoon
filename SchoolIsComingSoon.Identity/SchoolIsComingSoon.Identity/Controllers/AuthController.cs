@@ -1,9 +1,11 @@
 ﻿using Duende.IdentityModel;
 using Duende.IdentityServer.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SchoolIsComingSoon.Identity.Common.Constants;
 using SchoolIsComingSoon.Identity.Models;
+using SchoolIsComingSoon.Identity.Services;
 using System.Security.Claims;
 
 namespace SchoolIsComingSoon.Identity.Controllers
@@ -84,21 +86,62 @@ namespace SchoolIsComingSoon.Identity.Controllers
             var result = await _userManager.CreateAsync(user, viewModel.Password);
             if (result.Succeeded)
             {
-                _userManager.AddToRoleAsync(user, Roles.User).GetAwaiter().GetResult();
-                var claims = _userManager.AddClaimsAsync(user, new Claim[]
-                {
-                    new Claim(JwtClaimTypes.Name, user.UserName),
-                    new Claim(JwtClaimTypes.Name, user.LastName),
-                    new Claim(JwtClaimTypes.Name, user.FirstName),
-                    new Claim(JwtClaimTypes.Name, user.Email),
-                    new Claim(JwtClaimTypes.Role, Roles.User)
-                }).Result;
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var callbackUrl = Url.Action(
+                    "ConfirmEmail",
+                    "Auth",
+                    new ConfirmEmailViewModel { UserId = user.Id, Code = code, ReturnUrl = viewModel.ReturnUrl },
+                    protocol: HttpContext.Request.Scheme);
 
-                await _signInManager.SignInAsync(user, false);
-                return Redirect(viewModel.ReturnUrl);
+                EmailService emailService = new EmailService();
+                await emailService.SendEmailAsync(viewModel.Email, "Завершение регистрации",
+                    $"Подтвердите регистрацию, перейдя по <a href='{callbackUrl}'>ссылке</a>.");
+
+                return RedirectToAction("WaitingForEmailConfirmation");
             }
             ModelState.AddModelError(string.Empty, "Error occurred");
             return View(viewModel);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(ConfirmEmailViewModel viewModel)
+        {
+            if (viewModel.UserId != null && viewModel.Code != null)
+            {
+                var user = await _userManager.FindByIdAsync(viewModel.UserId);
+
+                if (user != null)
+                {
+                    var result = await _userManager.ConfirmEmailAsync(user, viewModel.Code);
+
+                    if (result.Succeeded)
+                    {
+                        _userManager.AddToRoleAsync(user, Roles.User).GetAwaiter().GetResult();
+                        var claims = _userManager.AddClaimsAsync(user, new Claim[]
+                        {
+                            new Claim(JwtClaimTypes.Name, user.UserName),
+                            new Claim(JwtClaimTypes.Name, user.LastName),
+                            new Claim(JwtClaimTypes.Name, user.FirstName),
+                            new Claim(JwtClaimTypes.Name, user.Email),
+                            new Claim(JwtClaimTypes.Role, Roles.User)
+                        }).Result;
+
+                        await _signInManager.SignInAsync(user, false);
+                        return Redirect(viewModel.ReturnUrl);
+                    }
+                }
+            }
+
+            ModelState.AddModelError(string.Empty, "Error occurred");
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        public IActionResult WaitingForEmailConfirmation()
+        {
+            ViewBag.IntermediatePage = true;
+            return View();
         }
 
         [HttpGet]
