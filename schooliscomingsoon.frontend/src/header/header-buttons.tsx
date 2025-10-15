@@ -73,27 +73,27 @@ export function MenuButtons(props: any) {
 function UserHButtons() {
     return(
     <ul className='header_buttons_panel'>
-        <a href='/index'><li className='menu_item'>Главная</li></a>
-        <a><li className='menu_item'>|</li></a>
-        <a href='/pre-school-education'><li className='menu_item'>Дошкольное образование</li></a>
-        <a><li className='menu_item'>|</li></a>
-        <a href='/elementary-grades'><li className='menu_item'>Начальные классы</li></a>
-        <a><li className='menu_item'>|</li></a>
-        <a href='/information-for-parents'><li className='menu_item'>Информация для родителей</li></a>
+        <a className='menu_item_container' href='/index'><li className='menu_item'>Главная</li></a>
+        <a className='menu_item_container'><li className='menu_item_splitter'>|</li></a>
+        <a className='menu_item_container' href='/pre-school-education'><li className='menu_item'>Дошкольное образование</li></a>
+        <a className='menu_item_container'><li className='menu_item_splitter'>|</li></a>
+        <a className='menu_item_container' href='/elementary-grades'><li className='menu_item'>Начальные классы</li></a>
+        <a className='menu_item_container'><li className='menu_item_splitter'>|</li></a>
+        <a className='menu_item_container' href='/information-for-parents'><li className='menu_item'>Информация для родителей</li></a>
     </ul>)
 }
   
 function AdminHButtons() {
     return(
     <ul className='header_buttons_panel'>
-        <a href='/index'><li className='menu_item'>Главная</li></a>
-        <a><li className='menu_item'>|</li></a>
-        <a href='/pre-school-education'><li className='menu_item'>Дошкольное образование</li></a>
-        <a><li className='menu_item'>|</li></a>
-        <a href='/elementary-grades'><li className='menu_item'>Начальные классы</li></a>
-        <a><li className='menu_item'>|</li></a>
-        <a href='/information-for-parents'><li className='menu_item'>Информация для родителей</li></a>
-        <a><li className='menu_item'>|</li></a>
-        <a href='/create-post'><li className='menu_item'>Новый пост</li></a>
+        <a className='menu_item_container' href='/index'><li className='menu_item'>Главная</li></a>
+        <a className='menu_item_container'><li className='menu_item_splitter'>|</li></a>
+        <a className='menu_item_container' href='/pre-school-education'><li className='menu_item'>Дошкольное образование</li></a>
+        <a className='menu_item_container'><li className='menu_item_splitter'>|</li></a>
+        <a className='menu_item_container' href='/elementary-grades'><li className='menu_item'>Начальные классы</li></a>
+        <a className='menu_item_container'><li className='menu_item_splitter'>|</li></a>
+        <a className='menu_item_container' href='/information-for-parents'><li className='menu_item'>Информация для родителей</li></a>
+        <a className='menu_item_container'><li className='menu_item_splitter'>|</li></a>
+        <a className='menu_item_container' href='/create-post'><li className='menu_item'>Новый пост</li></a>
     </ul>)
 }

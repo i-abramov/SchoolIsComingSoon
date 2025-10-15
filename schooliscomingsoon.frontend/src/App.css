@@ -19,7 +19,8 @@ button {
     width: 100%;
     background-color: #1F262A;
     display: flex;
-    height: 60px;
+    height: auto;
+    min-height: 60px;
     margin: 0px auto;
     margin-bottom: 10px;
     flex-direction: row;
@@ -56,7 +57,7 @@ button {
     padding-left: 4px;
 }
 .icon {
-    margin: 35px 35px 35px 35px;
+    margin: 0 35px 0 35px;
     height: 60px;
     width: 64px;
     padding: 5px 10px 5px 10px;
@@ -131,7 +132,7 @@ button {
     flex-direction: row;
     align-items: center;
     height: 35px;
-    margin-top: 15px;
+    margin: 15px 0;
 }
 .post_footer_icon {
     height: 25px;
@@ -342,7 +343,7 @@ button {
     background-color: #1F262A;
     color: white;
     font-size: 24px;
-    margin: 35px 0;
+    margin: 15px 0;
     padding: 5px 10px 5px 10px;
 }
 .auth_button:hover {
@@ -350,19 +351,29 @@ button {
     color: white;
     text-decoration: underline ;
     font-size: 24px;
-    margin: 35px 0;
+    margin: 15px 0;
+}
+.menu_item_container {
+    display: flex;
+    align-items: center;
 }
 .menu_item {
     color: white;
     font-size: 24px;
-    margin: 35px 0;
+    margin: 15px 0;
     padding: 5px 10px 5px 10px;
 }
 .menu_item:hover {
     color: white;
     text-decoration: underline ;
     font-size: 24px;
-    margin: 35px 0;
+    margin: 15px 0;
+}
+.menu_item_splitter {
+    color: white;
+    font-size: 24px;
+    margin: 15px 0;
+    padding: 5px 10px 5px 10px;
 }
 
 .upload-button {
@@ -767,14 +778,6 @@ input:checked + .slider:before {
     white-space: normal; 
 }
 
-
-
-
-
-
-
-
-
 .header_auth_panel {
     display: flex;
     flex-direction: row;
@@ -784,7 +787,6 @@ input:checked + .slider:before {
 .settings-container {
     position: relative;
     display: inline-block;
-    margin-left: 10px;
 }
 
 .dropdown-menu {
@@ -828,12 +830,271 @@ input:checked + .slider:before {
     width: 45px;
     padding: 5px 10px 5px 10px;
     object-fit: contain;
-    margin: 35px 0;
+    margin: 15px 0;
 }
 .username {
     font-size: 24px;
 	color: white;
     white-space: nowrap;
-    margin: 35px 0;
+    margin: 15px 0;
     padding: 5px 10px 5px 10px;
+}
+
+/* ===== 📱 АДАПТИВНАЯ ВЕРСТКА ===== */
+
+/* --- Планшеты (до 1024px) --- */
+@media (max-width: 1024px) {
+  .left_menu, .right_menu {
+    width: 200px;
+  }
+
+  .main_block {
+    width: 90%;
+  }
+
+  .header_right_part {
+    width: 350px;
+  }
+
+  .input_title, .input_text, .input_richtext, 
+  .files_panel, .image_panel, .post_editor_toolbar {
+    width: 90%;
+  }
+
+  .comment_input {
+    width: 85%;
+  }
+
+  .post_files_panel {
+    width: 90%;
+    margin-left: 15px;
+  }
+}
+
+/* --- Мобильные устройства (до 768px) --- */
+@media (max-width: 768px) {
+  /* Общие контейнеры */
+  .page {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .left_menu,
+  .right_menu {
+    display: none;
+  }
+
+  .main_block {
+    width: 95%;
+  }
+
+  /* Шапка */
+  .header_block {
+    flex-direction: column;
+    height: auto;
+    padding: 10px;
+    align-items: center;
+  }
+
+  .header_buttons_panel {
+    justify-content: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+  }
+
+  .header_right_part {
+    width: 100%;
+    justify-content: center;
+    flex-direction: column;
+    margin: 0;
+  }
+
+  .header_auth_panel {
+    width: 100%;
+    justify-content: center;
+    flex-direction: row;
+    margin: 0;
+  }
+
+  .settings_button {
+    margin: 0;
+  }
+
+  .header_search {
+    width: 90%;
+    margin: 10px auto;
+  }
+
+  .username {
+    font-size: 18px;
+    margin: 10px 0;
+  }
+
+  .auth_button, .auth_button:hover,
+  .menu_item, .menu_item:hover {
+    font-size: 20px;
+    margin: 10px;
+  }
+
+  .menu_item_splitter {
+    display: none;
+  }
+
+  /* Посты */
+  .post {
+    width: 100%;
+  }
+
+  .post_title {
+    font-size: 20px;
+    margin-left: 15px;
+    margin-top: 15px;
+  }
+
+  .post_text {
+    font-size: 16px;
+    margin-left: 15px;
+  }
+
+  .post_date {
+    font-size: 14px;
+    margin-left: 15px;
+    margin-bottom: 0;
+  }
+
+  .post_footer {
+    flex-direction: row;
+    align-items: flex-start;
+    height: auto;
+    margin: 10px 0;
+  }
+
+  .post_footer_left,
+  .post_footer_right {
+    margin: 5px 15px;
+  }
+
+  /* Комментарии */
+  .comment_username {
+    margin-left: 15px;
+  }
+
+  .comment_input_block {
+    flex-direction: row;
+    align-items: center;
+    padding-left: 15px;
+    padding-top: 15px;
+    margin: 0;
+  }
+
+  .comment_input {
+    width: 90%;
+    margin: 0;
+  }
+
+  .send_comment_button {
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+
+  .show_more_comments_button {
+    width: 95%;
+    margin: 15px;
+  }
+
+  .comment_splitter {
+    width: auto;
+    margin-left: 15px;
+    margin-right: 55px;
+  }
+
+  /* Формы и редактор */
+  .input_title, .input_text, .input_richtext, 
+  .files_panel, .image_panel, .post_editor_toolbar {
+    width: 95%;
+    max-width: 95%;
+    min-width: auto;
+  }
+
+  .create_button, .cancel_button {
+    width: 150px;
+    height: 35px;
+    font-size: 16px;
+  }
+
+  /* Изображения и файлы */
+  .post_image_block {
+    height: auto;
+    padding: 15px;
+  }
+
+  .post_image_preview {
+    position: static;
+    padding: 0;
+  }
+
+  .image_block {
+    width: 100px;
+    height: 60px;
+  }
+
+  .file_name_text {
+    width: 100px;
+  }
+
+  /* Теги */
+  .tag_panel {
+    flex-wrap: wrap;
+    justify-content: center;
+    height: auto;
+  }
+
+  .tag {
+    margin-bottom: 5px;
+  }
+
+  /* Настройки */
+  .dropdown-menu {
+    top: 50px;
+    right: 0;
+    min-width: 150px;
+  }
+}
+
+/* --- Очень маленькие экраны (до 480px) --- */
+@media (max-width: 480px) {
+  .header_search {
+    max-width: 250px;
+  }
+
+  .auth_button, .auth_button:hover, .menu_item, .menu_item:hover {
+    font-size: 18px;
+    margin: 8px;
+  }
+
+
+  .post_title {
+    font-size: 18px;
+  }
+
+  .comment_text {
+    font-size: 14px;
+    margin-left: 15px;
+  }
+
+  .comment_date {
+    margin-left: 15px;
+  }
+
+  .comment_buttons_container {
+    margin: 4px 55px auto auto;
+  }
+
+  .reply_button {
+    margin-right: 85px;
+  }
+
+  .username {
+    font-size: 16px;
+  }
 }
