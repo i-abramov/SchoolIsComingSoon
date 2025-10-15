@@ -1,10 +1,10 @@
 ﻿using Duende.IdentityModel;
-using Duende.IdentityServer.Models;
 using Duende.IdentityServer;
+using Duende.IdentityServer.Models;
 
 namespace SchoolIsComingSoon.Identity
 {
-    public class Configuration
+    public static class Configuration
     {
         public static IEnumerable<ApiScope> ApiScopes =>
             new List<ApiScope>
@@ -22,20 +22,21 @@ namespace SchoolIsComingSoon.Identity
         public static IEnumerable<ApiResource> ApiResources =>
             new List<ApiResource>
             {
-                new ApiResource("SchoolIsComingSoonWebAPI", "Web API", new []
-                { 
-                    JwtClaimTypes.Name,
-                    JwtClaimTypes.Role,
-                    JwtClaimTypes.GivenName,
-                    JwtClaimTypes.FamilyName,
-                    JwtClaimTypes.Email
-                })
+                new ApiResource("SchoolIsComingSoonWebAPI", "Web API")
                 {
-                    Scopes = { "SchoolIsComingSoonWebAPI" }
+                    Scopes = { "SchoolIsComingSoonWebAPI" },
+                    UserClaims =
+                    {
+                        JwtClaimTypes.Name,
+                        JwtClaimTypes.Role,
+                        JwtClaimTypes.GivenName,
+                        JwtClaimTypes.FamilyName,
+                        JwtClaimTypes.Email
+                    }
                 }
             };
 
-        public static IEnumerable<Client> Clients =>
+        public static IEnumerable<Client> Clients(string clientUrl) =>
             new List<Client>
             {
                 new Client
@@ -45,30 +46,27 @@ namespace SchoolIsComingSoon.Identity
                     AllowedGrantTypes = GrantTypes.Code,
                     RequireClientSecret = false,
                     RequirePkce = true,
-                    RedirectUris =
-                    {
-                        "http://localhost:3000/signin-oidc"
-                    },
-                    AllowedCorsOrigins =
-                    {
-                        "http://localhost:3000"
-                    },
-                    PostLogoutRedirectUris =
-                    {
-                        "http://localhost:3000/signout-oidc"
-                    },
+
+                    RedirectUris = { $"{clientUrl}/signin-oidc" },
+                    PostLogoutRedirectUris = { $"{clientUrl}/signout-oidc", $"{clientUrl}/silent-renew.html" },
+                    AllowedCorsOrigins = { clientUrl },
+
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
-                        JwtClaimTypes.Name,
-                        JwtClaimTypes.Role,
-                        JwtClaimTypes.GivenName,
-                        JwtClaimTypes.FamilyName,
-                        JwtClaimTypes.Email,
-                        "SchoolIsComingSoonWebAPI"
+                        "SchoolIsComingSoonWebAPI",
+                        IdentityServerConstants.StandardScopes.OfflineAccess
                     },
-                    AllowAccessTokensViaBrowser = true
+
+                    AllowAccessTokensViaBrowser = true,
+                    RequireConsent = false,
+                    AccessTokenLifetime = 3600,
+                    AllowOfflineAccess = true,
+                    RefreshTokenExpiration = TokenExpiration.Sliding,
+                    SlidingRefreshTokenLifetime = 60 * 60 * 24,
+                    AbsoluteRefreshTokenLifetime = 30 * 24 * 60 * 60,
+                    AccessTokenType = AccessTokenType.Jwt
                 }
             };
     }

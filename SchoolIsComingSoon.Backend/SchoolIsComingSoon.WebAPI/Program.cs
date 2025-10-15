@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using SchoolIsComingSoon.Application;
 using SchoolIsComingSoon.Application.Common.Mappings;
@@ -10,9 +10,25 @@ using SchoolIsComingSoon.WebAPI.Services;
 using Serilog;
 using Serilog.Events;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+    .WriteTo.File("SchoolIsComingSoonWebAppLog-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 builder.Services.AddAutoMapper(config =>
 {
@@ -28,26 +44,58 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyHeader();
-        policy.AllowAnyMethod();
-        policy.AllowAnyOrigin();
+        policy.AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowAnyOrigin();
     });
 });
 
-builder.Services.AddAuthentication(config =>
-{
-    config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-    .AddJwtBearer("Bearer", options =>
+var jwtAuthority = builder.Configuration["Jwt:Authority"];
+var jwtAudience = builder.Configuration["Jwt:Audience"];
+
+Console.WriteLine($"[DEBUG] Config Jwt:Authority = {jwtAuthority}");
+Console.WriteLine($"[DEBUG] Config Jwt:Audience = {jwtAudience}");
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
-        options.Authority = "https://localhost:44344/";
-        options.Audience = "SchoolIsComingSoonWebAPI";
-        options.RequireHttpsMetadata = false;
+        options.Authority = jwtAuthority;
+        options.Audience = jwtAudience;
+        options.RequireHttpsMetadata = true;
         options.SaveToken = true;
         options.IncludeErrorDetails = true;
-    });
 
+        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = jwtAuthority,
+            ValidateAudience = true,
+            ValidAudience = jwtAudience,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine($"[DEBUG] ❌ JWT authentication failed: {context.Exception.Message}");
+                return Task.CompletedTask;
+            },
+            OnMessageReceived = context =>
+            {
+                var token = context.Request.Headers["Authorization"].FirstOrDefault();
+                if (token != null)
+                    Console.WriteLine($"[DEBUG] Received token: {token}");
+                return Task.CompletedTask;
+            },
+            OnTokenValidated = context =>
+            {
+                Console.WriteLine("[DEBUG] ✅ JWT validated successfully!");
+                return Task.CompletedTask;
+            }
+        };
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApiVersioning()
@@ -60,17 +108,14 @@ builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwa
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddSingleton<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
-Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-    .WriteTo.File("SchoolIsComingSoonWebAppLog-.txt", rollingInterval:
-        RollingInterval.Day)
-    .CreateLogger();
-
-builder.Host.UseSerilog();
+builder.WebHost.UseUrls("http://0.0.0.0:5050");
 
 var app = builder.Build();
+
+var conn = builder.Configuration["DbConnection"];
+Console.WriteLine($"[DEBUG] Loaded connection string: {conn}");
 
 using (var scope = app.Services.CreateScope())
 {
@@ -78,11 +123,11 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = serviceProvider.GetRequiredService<SicsDbContext>();
-        DbInitializer.Initialize(context);
+        await DbInitializer.InitializeAsync(context);
     }
     catch (Exception exception)
     {
-        Log.Fatal(exception, "An error occured while app initialization");
+        Log.Fatal(exception, "An error occurred while app initialization");
     }
 }
 
@@ -95,18 +140,17 @@ app.UseSwaggerUI(config =>
         config.SwaggerEndpoint(
             $"/swagger/{description.GroupName}/swagger.json",
             description.GroupName.ToUpperInvariant());
-        config.RoutePrefix = string.Empty;
     }
+    config.RoutePrefix = "swagger";
 });
+
 app.UseCustomExceptionHandler();
+
 app.UseRouting();
-app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
 
-app.Run();
+app.MapControllers();
+
+await app.RunAsync();

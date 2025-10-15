@@ -19,6 +19,7 @@ export default function PostEditorImagePanel(props: any) {
                 <div className='image_block' key={image.id}>
                     <img
                         src={image.url}
+                        alt='preview'
                         className='image_preview'
                     />
                     <button
@@ -28,6 +29,7 @@ export default function PostEditorImagePanel(props: any) {
                     >
                         <img
                             src={RemoveImg}
+                            alt='close'
                             className='image_close'
                         />
                     </button>

@@ -16,28 +16,36 @@ namespace SchoolIsComingSoon.Application.AppUsers.Commands.CreateAppUser
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(user => user.Id == request.Id);
 
-            Subscription subscription;
+            var currentSubscription = await _dbContext.CurrentSubscriptions
+                .FirstOrDefaultAsync(cs => cs.UserId == request.Id, cancellationToken);
 
-            if (request.Role == "Owner" || request.Role == "Admin")
+            if (currentSubscription == null)
             {
-                subscription = await _dbContext.Subscriptions.FirstAsync(subscription => subscription.Name == "Максимальная");
-            }
-            else
-            {
-                subscription = await _dbContext.Subscriptions.FirstAsync(subscription => subscription.Name == "Бесплатная");
-            }
+                Subscription subscription;
 
-            var currentSubscription = new CurrentSubscription()
-            {
-                Id = Guid.NewGuid(),
-                ExpiresAfter = "∞",
-                UserId = request.Id,
-                SubscriptionId = subscription.Id
-            };
+                if (request.Role == "Owner" || request.Role == "Admin")
+                {
+                    subscription = await _dbContext.Subscriptions.FirstAsync(s => s.Name == "Максимальная");
+                }
+                else
+                {
+                    subscription = await _dbContext.Subscriptions.FirstAsync(s => s.Name == "Бесплатная");
+                }
+
+                currentSubscription = new CurrentSubscription
+                {
+                    Id = Guid.NewGuid(),
+                    ExpiresAfter = "∞",
+                    UserId = request.Id,
+                    SubscriptionId = subscription.Id
+                };
+
+                await _dbContext.CurrentSubscriptions.AddAsync(currentSubscription, cancellationToken);
+            }
 
             if (user == null)
             {
-                var newUser = new AppUser()
+                var newUser = new AppUser
                 {
                     Id = request.Id,
                     UserName = request.UserName,
@@ -48,11 +56,10 @@ namespace SchoolIsComingSoon.Application.AppUsers.Commands.CreateAppUser
                     SubscriptionId = currentSubscription.Id
                 };
 
-                await _dbContext.CurrentSubscriptions.AddAsync(currentSubscription, cancellationToken);
                 await _dbContext.Users.AddAsync(newUser, cancellationToken);
-                await _dbContext.SaveChangesAsync(cancellationToken);
             }
-            
+
+            await _dbContext.SaveChangesAsync(cancellationToken);
             return Unit.Value;
         }
     }

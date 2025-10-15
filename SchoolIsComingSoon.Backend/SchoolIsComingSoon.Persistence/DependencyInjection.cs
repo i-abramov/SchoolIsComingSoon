@@ -10,11 +10,12 @@ namespace SchoolIsComingSoon.Persistence
         public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration["DbConnection"];
+
             services.AddDbContext<SicsDbContext>(options =>
-            {
-                options.UseSqlite(connectionString);
-            });
-            services.AddScoped<ISicsDbContext>(provider => provider.GetService<SicsDbContext>());
+                options.UseNpgsql(connectionString));
+
+            services.AddScoped<ISicsDbContext>(provider => provider.GetRequiredService<SicsDbContext>());
+
             return services;
         }
     }

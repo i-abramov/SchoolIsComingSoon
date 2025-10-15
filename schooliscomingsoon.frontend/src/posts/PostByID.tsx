@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
-import { Client, PostFileLookupDto, PostImageLookupDto, PostLookupDto, PostVm } from '../api/api';
+import { Client, PostFileLookupDto, PostImageLookupDto, PostLookupDto } from '../api/api';
 import { useParams } from 'react-router-dom';
 import { AuthContext } from '../auth/auth-provider';
 import PostWithSub from './PostWithSub';
 
-const apiClient = new Client('https://localhost:44399');
+const apiClient = new Client(process.env.REACT_APP_SERVER_URL);
 
 type PostWithFilesAndImages = {
     postDto: PostLookupDto;
@@ -30,16 +30,16 @@ function PostByID(props: any) {
         
             const post: PostWithFilesAndImages = {
                 postDto: postDetailsVm,
-                files: postFileListVm.files != undefined ? postFileListVm.files : [],
-                images: postImageListVm.images != undefined ? postImageListVm.images : [],
-                preview: postImageListVm.images != undefined && postImageListVm.images.length > 0 ? `data:image/png;base64,${postImageListVm.images[0].base64Code!}` : ''
+                files: postFileListVm.files !== undefined ? postFileListVm.files : [],
+                images: postImageListVm.images !== undefined ? postImageListVm.images : [],
+                preview: postImageListVm.images !== undefined && postImageListVm.images.length > 0 ? `data:image/png;base64,${postImageListVm.images[0].base64Code!}` : ''
             };
 
             setPost(post);
         }
 
         getPost();
-    }, []);
+    }, [id]);
 
     return (
         <>

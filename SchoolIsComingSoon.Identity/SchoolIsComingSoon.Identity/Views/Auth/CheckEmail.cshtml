@@ -1,0 +1,21 @@
+﻿@model CheckEmailViewModel
+<head>
+    <link href=@Url.Content("~/Styles/app.css") rel="stylesheet" type="text/css" />
+</head>
+<div class="panel">
+    <form asp-controller="Auth" asp-action="CheckEmail" method="post">
+        <input type="hidden" asp-for="ReturnUrl" />
+        <div class="header">Восстановление пароля</div>
+        <div class="block">
+            <label>E-mail</label>
+            <input asp-for="Email" class="input" />
+            <span asp-validation-for="Email"></span>
+        </div>
+        <div class="block">
+            <button type="submit" class="button">Отправить письмо</button>
+        </div>
+        <div class="links-row">
+            <a asp-controller="Auth" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl" class="switch-link">Назад к входу</a>
+        </div>
+    </form>
+</div>

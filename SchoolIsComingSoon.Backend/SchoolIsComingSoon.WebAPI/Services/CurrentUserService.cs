@@ -6,62 +6,56 @@ namespace SchoolIsComingSoon.WebAPI.Services
     public class CurrentUserService : ICurrentUserService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ILogger<CurrentUserService> _logger;
 
-        public CurrentUserService(IHttpContextAccessor httpContextAccessor) =>
+        public CurrentUserService(IHttpContextAccessor httpContextAccessor, ILogger<CurrentUserService> logger)
+        {
             _httpContextAccessor = httpContextAccessor;
+            _logger = logger;
+        }
+
+        private ClaimsPrincipal? User => _httpContextAccessor.HttpContext?.User;
 
         public Guid UserId
         {
             get
             {
-                var id = _httpContextAccessor.HttpContext?.User?
-                    .FindFirstValue(ClaimTypes.NameIdentifier);
-                return string.IsNullOrEmpty(id) ? Guid.Empty : Guid.Parse(id);
+                var id = User?.FindFirstValue(ClaimTypes.NameIdentifier)
+                      ?? User?.FindFirstValue("sub");
+
+                if (!Guid.TryParse(id, out var guid))
+                {
+                    _logger.LogWarning("❗ Cannot parse UserId. Claims: {Claims}",
+                        string.Join(", ", User?.Claims.Select(c => $"{c.Type}={c.Value}") ?? []));
+                    return Guid.Empty;
+                }
+
+                return guid;
             }
         }
 
-        public string UserName
-        {
-            get
-            {
-                var name = _httpContextAccessor.HttpContext?.User?.FindFirstValue("name");
-                return string.IsNullOrEmpty(name) ? string.Empty : name;
-            }
-        }
+        public string UserName =>
+            User?.FindFirstValue("name") ?? string.Empty;
 
-        public string FirstName
-        {
-            get
-            {
-                var given_name = _httpContextAccessor.HttpContext?.User?.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname");
-                return string.IsNullOrEmpty(given_name) ? string.Empty : given_name;
-            }
-        }
-        public string LastName
-        {
-            get
-            {
-                var family_name = _httpContextAccessor.HttpContext?.User?.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname");
-                return string.IsNullOrEmpty(family_name) ? string.Empty : family_name;
-            }
-        }
-        public string Email
-        {
-            get
-            {
-                var email = _httpContextAccessor.HttpContext?.User?.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress");
-                return string.IsNullOrEmpty(email) ? string.Empty : email;
-            }
-        }
+        public string FirstName =>
+            User?.FindFirstValue(ClaimTypes.GivenName)
+            ?? User?.FindFirstValue("given_name")
+            ?? string.Empty;
 
-        public string Role
-        {
-            get
-            {
-                var role = _httpContextAccessor.HttpContext?.User?
-                    .FindFirstValue(ClaimTypes.Role);
-                return string.IsNullOrEmpty(role) ? string.Empty : role;
-            }
-        }
+        public string LastName =>
+            User?.FindFirstValue(ClaimTypes.Surname)
+            ?? User?.FindFirstValue("family_name")
+            ?? string.Empty;
+
+        public string Email =>
+            User?.FindFirstValue(ClaimTypes.Email)
+            ?? User?.FindFirstValue("email")
+            ?? User?.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")
+            ?? string.Empty;
+
+        public string Role =>
+            User?.FindFirstValue(ClaimTypes.Role)
+            ?? User?.FindFirstValue("role")
+            ?? string.Empty;
     }
 }

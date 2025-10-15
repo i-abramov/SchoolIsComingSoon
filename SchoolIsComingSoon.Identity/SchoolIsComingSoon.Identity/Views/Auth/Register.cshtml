@@ -39,6 +39,8 @@
         <div class="block">
             <button type="submit" class="button">Зарегистрироваться</button>
         </div>
-        <a asp-controller="Auth" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl" class="switch-button">Войти</a>
+        <div class="links-row">
+            <a asp-controller="Auth" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl" class="switch-link">Войти</a>
+        </div>
     </form>
 </div>

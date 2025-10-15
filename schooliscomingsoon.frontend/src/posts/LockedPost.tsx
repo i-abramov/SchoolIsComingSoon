@@ -16,6 +16,7 @@ function LockedPost(props: any) {
             <div className='post_image_block'>
                 <img
                     src={LockedPostImg}
+                    alt='post preview'
                     className='post_image_preview'
                 />
             </div>

@@ -3,10 +3,9 @@ import { Client, PostFileLookupDto, PostImageLookupDto, PostLookupDto } from '..
 import { useLocation } from 'react-router-dom';
 import { SearchContext } from '../header/search-provider';
 import { AuthContext } from '../auth/auth-provider';
-import Post from './Post';
 import PostWithSub from './PostWithSub';
 
-const apiClient = new Client('https://localhost:44399');
+const apiClient = new Client(process.env.REACT_APP_SERVER_URL);
 
 type PostWithFilesAndImages = {
     postDto: PostLookupDto;
@@ -17,64 +16,76 @@ type PostWithFilesAndImages = {
 
 function PostList(props: any) {
     const [posts, setPosts] = useState<PostWithFilesAndImages[]>([]);
-
     const { text } = useContext(SearchContext);
     const { role } = useContext(AuthContext);
     const location = useLocation();
 
+    const getFilteredPosts = (allPosts: PostLookupDto[]) => {
+        switch (location.pathname) {
+            case '/pre-school-education':
+                return allPosts.filter(p => p.categories?.includes('Дошкольное образование'));
+            case '/elementary-grades':
+                return allPosts.filter(p => p.categories?.includes('Начальные классы'));
+            case '/information-for-parents':
+                return allPosts.filter(p => p.categories?.includes('Информация для родителей'));
+            default:
+                return allPosts;
+        }
+    };
+
+    const fetchPosts = async () => {
+        const postListVm = await apiClient.getAllPosts('1.0');
+        const filteredList = getFilteredPosts(postListVm.posts ?? []);
+
+        const postsWithExtras = await Promise.all(
+            filteredList.map(async post => {
+                const postFileListVm = await apiClient.getAllPostFiles(post.id!, '1.0');
+                const postImageListVm = await apiClient.getAllPostImages(post.id!, '1.0');
+
+                const images = postImageListVm.images ?? [];
+                const preview =
+                    images.length > 0 ? `data:image/png;base64,${images[0].base64Code!}` : '';
+
+                return {
+                    postDto: post,
+                    files: postFileListVm.files ?? [],
+                    images,
+                    preview,
+                };
+            })
+        );
+
+        setPosts(postsWithExtras);
+    };
+
     useEffect(() => {
-        const getPosts = async () => {
-            const postListVm = await apiClient.getAllPosts('1.0');
-            let filteredList: PostLookupDto[] | undefined;
-        
-            if (location.pathname === '/pre-school-education') {
-                filteredList = postListVm.posts?.filter(post => post.categories?.includes('Дошкольное образование'));
-            } else if (location.pathname === '/elementary-grades') {
-                filteredList = postListVm.posts?.filter(post => post.categories?.includes('Начальные классы'));
-            }  else if (location.pathname === '/information-for-parents') {
-                filteredList = postListVm.posts?.filter(post => post.categories?.includes('Информация для родителей'));
+        const filterOrFetch = async () => {
+            if (text.trim() !== '') {
+                setPosts(prev =>
+                    prev.filter(p =>
+                        p.postDto.text?.toLowerCase().includes(text.toLowerCase())
+                    )
+                );
             } else {
-                filteredList = postListVm.posts;
+                await fetchPosts();
             }
-
-            let postsWithFilesAndImages: PostWithFilesAndImages[] = [];
-
-            if (filteredList != undefined) {
-                for (let i = 0; i < filteredList.length; i++) {
-                    let postFileListVm = await apiClient.getAllPostFiles(filteredList[i].id!, '1.0');
-                    let postImageListVm = await apiClient.getAllPostImages(filteredList[i].id!, '1.0');
-
-                    const post: PostWithFilesAndImages = {
-                        postDto: filteredList[i],
-                        files: postFileListVm.files != undefined ? postFileListVm.files : [],
-                        images: postImageListVm.images != undefined ? postImageListVm.images : [],
-                        preview: postImageListVm.images != undefined && postImageListVm.images.length > 0 ? `data:image/png;base64,${postImageListVm.images[0].base64Code!}` : ''
-                    };
-
-                    postsWithFilesAndImages.push(post);
-                }
-            }
-            
-
-            setPosts(postsWithFilesAndImages);
-        }
-
-        if (text !== '') {
-            var filteredList = posts?.filter(function(postWithFilesAndImages) {
-                return postWithFilesAndImages.postDto.text?.toLowerCase().search(text.toLowerCase()) !== -1;
-            }); 
-            setPosts(filteredList);
-        } else {
-            getPosts();
-        }
-    }, [text]);
+        };
+        filterOrFetch();
+    }, [text, location.pathname]);
 
     return (
         <>
-            {posts?.map((post) => (
-                <PostWithSub post={post} role={role} setPostId={props.setPostId} isAllCommentsVisible={false}/>
+            {posts.map(post => (
+                <PostWithSub
+                    key={post.postDto.id}
+                    post={post}
+                    role={role}
+                    setPostId={props.setPostId}
+                    isAllCommentsVisible={false}
+                />
             ))}
         </>
     );
-};
+}
+
 export default PostList;

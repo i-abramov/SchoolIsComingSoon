@@ -58,6 +58,7 @@ export default function PostEditorTagPanel(props: any) {
             >
                 <img
                     src={BlueTag}
+                    alt='tag'
                     className='tag_image'
                 />
                 дошкольное образование
@@ -71,6 +72,7 @@ export default function PostEditorTagPanel(props: any) {
             >
                 <img
                     src={GreenTag}
+                    alt='tag'
                     className='tag_image'
                 />
                 начальные классы
@@ -84,6 +86,7 @@ export default function PostEditorTagPanel(props: any) {
             >
                 <img
                     src={OrangeTag}
+                    alt='tag'
                     className='tag_image'
                 />
                 информация для родителей

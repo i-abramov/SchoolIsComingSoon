@@ -6,6 +6,8 @@ import { AuthContext } from '../auth/auth-provider';
 export default function Comment(props: any) {
     const { role, id } = useContext(AuthContext);
 
+    const { isAuthenticated } = useContext(AuthContext);
+
     const handleOnClickReply = () => {
         props.replyToComment(`${props.comment.firstName}, `);
     }
@@ -27,9 +29,16 @@ export default function Comment(props: any) {
             </div>
             <div className='comment_text'>{props.comment.text}</div>
             <div className='comment_date'>{props.comment.creationDate}</div>
-            <button className='reply_button' onClick={handleOnClickReply}>
-                ответить
-            </button>
+            
+            {isAuthenticated
+            ?
+                <button className='reply_button' onClick={handleOnClickReply}>
+                    ответить
+                </button>              
+            :
+                <></>
+            }
+            
         </div>
     );
 }

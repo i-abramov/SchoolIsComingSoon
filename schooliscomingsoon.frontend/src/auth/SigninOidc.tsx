@@ -15,7 +15,7 @@ const SigninOidc: FC<{}> = () => {
         }
         signinAsync();
     }, [navigate]);
-    return <div>Redirecting...</div>;
+    return <div className='error_block'>Переадресация...</div>;
 };
 
 export default SigninOidc;

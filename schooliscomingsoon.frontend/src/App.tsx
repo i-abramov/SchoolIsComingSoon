@@ -7,12 +7,13 @@ import PostList from './posts/PostList';
 import PrivateRoute from './routes/private-route'
 import SearchContext from './header/search-provider';
 import { useState } from 'react';
-import { Client, CreatePostDto, CreatePostFileDto, CreatePostImageDto, SubscriptionListVm, UpdatePostDto } from './api/api';
+import { Client, CreatePostDto, CreatePostFileDto, CreatePostImageDto, UpdatePostDto } from './api/api';
 import PostByID from './posts/PostByID';
 import PostEditorPage, { FormData } from './posts/PostEditor/PostEditorPage';
 import RightMenu from './menu/RightMenu';
+import ErrorPage from './errors/ErrorPage';
 
-const apiClient = new Client('https://localhost:44399');
+const apiClient = new Client(process.env.REACT_APP_SERVER_URL);
 
 async function CreatePost(formData: FormData) {
     const createPostDto: CreatePostDto = {
@@ -136,6 +137,7 @@ export default function App() {
                                     <Route path='/posts/:id' element={<PostByID setPostId={setEditedPostId}/>}/>
                                     <Route path='/signout-oidc' element={<SignOutOidc/>}/>
                                     <Route path='/signin-oidc' element={<SignInOidc/>} />
+                                    <Route path="/home/error" element={<ErrorPage/>} />
                                 </Routes>
                         
                         </div>

@@ -17,7 +17,7 @@ export default function PostEditorToolbar(props: any) {
                 htmlFor='image-loader-button'
                 className='custom-button'
             >
-                <img className='add_image_button' src={AddImageImg}/>
+                <img className='add_image_button' alt='add button' src={AddImageImg}/>
             </label>
             <input
                 id='image-loader-button'
@@ -30,7 +30,7 @@ export default function PostEditorToolbar(props: any) {
                 htmlFor='file-loader-button'
                 className='custom-button'
             >
-                <img className='add_file_button' src={AddFileImg}/>
+                <img className='add_file_button' alt='add file button' src={AddFileImg}/>
             </label>
             <input
                 id='file-loader-button'

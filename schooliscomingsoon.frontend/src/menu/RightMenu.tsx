@@ -1,78 +1,63 @@
 import { useContext, useEffect, useState } from 'react';
-import { Client, CurrentSubscriptionVm, SubscriptionLookupDto } from '../api/api'; 
+import { Client, CurrentSubscriptionVm, SubscriptionLookupDto } from '../api/api';
 import { AuthContext } from '../auth/auth-provider';
 
-const apiClient = new Client('https://localhost:44399');
+const apiClient = new Client(process.env.REACT_APP_SERVER_URL);
 
 function RightMenu() {
     const [subscriptions, setSubscriptions] = useState<SubscriptionLookupDto[]>([]);
-    const [currentSub, setCurrentSub] = useState<CurrentSubscriptionVm>();
-
-    const { id, isAuthenticated } = useContext(AuthContext);
+    const [currentSub, setCurrentSub] = useState<CurrentSubscriptionVm | null>(null);
+    const { isAuthenticated } = useContext(AuthContext);
 
     useEffect(() => {
-        async function getSubs() {
-            let subs = await apiClient.getAllSubscriptions('1.0');
-            setSubscriptions(subs.subscriptions!);
-        }
-    
+        const getSubs = async () => {
+            const subs = await apiClient.getAllSubscriptions('1.0');
+            setSubscriptions(subs.subscriptions ?? []);
+        };
         getSubs();
     }, []);
 
     useEffect(() => {
-        async function getCurrentSub() {
-            if (isAuthenticated)
-            {
-                let curSub = await apiClient.getCurrentSubscription(id, '1.0');
+        const getCurrentSub = async () => {
+            if (isAuthenticated) {
+                const curSub = await apiClient.getCurrentSubscription('1.0');
                 setCurrentSub(curSub);
+            } else {
+                setCurrentSub(null);
             }
-        }
-        
+        };
         getCurrentSub();
     }, [isAuthenticated]);
 
     return (
-        <div className='right_menu'>
-            Подписки:
-            <div className='subs_list'>
-                <>
-                    {subscriptions?.map((sub) => (
-                        <>
-                            {sub.lvl == 0
-                            ?
-                                <></>
-                            :
-                                <div className='sub'>
-                                    «{sub.name}» - {sub.price} руб.
-                                </div>
-                            }
-                            
-                        </>
+        <div className="right_menu">
+            <div>Подписки:</div>
+
+            <div className="subs_list">
+                {subscriptions
+                    .filter(sub => sub.lvl !== 0)
+                    .map(sub => (
+                        <div className="sub" key={sub.id}>
+                            «{sub.name}» — {sub.price} руб.
+                        </div>
                     ))}
-                </>
             </div>
-            
-            {isAuthenticated
-            ?
+
+            {isAuthenticated && currentSub && (
                 <>
-                    <div className="splitter"/>
-            
-                    <div className='current_sub'>
-                        Текущая подписка:
-                        <div className='sub'>
-                            «{currentSub?.name}»
-                            <br></br>
-                            <br></br>
-                            Осталось до окончания подписки: {currentSub?.expiresAfter}
+                    <div className="splitter" />
+                    <div className="current_sub">
+                        <div>Текущая подписка:</div>
+                        <div className="sub">
+                            «{currentSub.name}»<br />
+                            <br />
+                            Осталось до окончания подписки: {currentSub.expiresAfter}
                         </div>
                     </div>
                 </>
-            :
-                <></>
-            }
-            
-            
+            )}
         </div>
     );
-};
+}
+
 export default RightMenu;

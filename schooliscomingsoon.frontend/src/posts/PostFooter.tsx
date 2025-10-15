@@ -14,7 +14,7 @@ function PostFooter(props: any) {
                 </div>
                                 
                 <div className='post_footer_left'>
-                    <img className='post_footer_icon' src={commentsImg}/>
+                    <img className='post_footer_icon' alt='post footer icon' src={commentsImg}/>
                     <div className='post_footer_text'>{commentsCount !== '0' ? commentsCount : ''}</div>
                 </div>
             </div>

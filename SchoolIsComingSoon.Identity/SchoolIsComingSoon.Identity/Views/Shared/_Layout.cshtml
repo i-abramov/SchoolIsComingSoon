@@ -1,0 +1,18 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Скоро в школу!</title>
+    <link href="@Url.Content("~/Styles/app.css")" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <a href="@ViewBag.ClientUrl" class="back-button">
+        &#8592; Назад
+    </a>
+
+    <div class="content">
+        @RenderBody()
+    </div>
+</body>
+</html>

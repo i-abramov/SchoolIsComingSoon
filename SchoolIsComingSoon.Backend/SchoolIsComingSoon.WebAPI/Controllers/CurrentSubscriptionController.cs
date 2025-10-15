@@ -10,28 +10,31 @@ namespace SchoolIsComingSoon.WebAPI.Controllers
 {
     [ApiVersion("1.0")]
     [Produces("application/json")]
-    [Route("api/{version:apiVersion}/[controller]")]
     public class CurrentSubscriptionController : BaseController
     {
         private readonly IMapper _mapper;
         private readonly ICurrentUserService _currentUserService;
+        private readonly ILogger<CurrentSubscriptionController> _logger;
 
-        public CurrentSubscriptionController(IMapper mapper, ICurrentUserService currentUserService) =>
-            (_mapper, _currentUserService) = (mapper, currentUserService);
+        public CurrentSubscriptionController(IMapper mapper, ICurrentUserService currentUserService, ILogger<CurrentSubscriptionController> logger) =>
+            (_mapper, _currentUserService, _logger) = (mapper, currentUserService, logger);
 
         /// <summary>
-        /// Get current subscription by userId
+        /// Get current user's subscription
         /// </summary>
         /// <remarks>
         /// Sample request:
-        /// GET /currentSubscription/20DC3FB7-BFA9-40AE-8CEF-12BC6F31DD79
+        /// GET /currentSubscription
         /// </remarks>
         /// <returns>Returns CurrentSubscriptionVm</returns>
         /// <response code="200">Success</response>
-        [HttpGet("{userId}")]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<CurrentSubscriptionVm>> GetCurrentSubscription(Guid userId)
+        public async Task<ActionResult<CurrentSubscriptionVm>> GetCurrentSubscription()
         {
+            _logger.LogInformation("Claims: {Claims}",
+                string.Join(", ", User?.Claims.Select(c => $"{c.Type}={c.Value}") ?? new string[0]));
+
             var createAppUserDto = new CreateAppUserDto
             {
                 Id = _currentUserService.UserId,
@@ -47,7 +50,7 @@ namespace SchoolIsComingSoon.WebAPI.Controllers
 
             var query = new GetCurrentSubscriptionQuery
             {
-                UserId = userId
+                UserId = _currentUserService.UserId
             };
             var vm = await Mediator.Send(query);
             return Ok(vm);

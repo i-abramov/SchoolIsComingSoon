@@ -16,12 +16,16 @@ function Header() {
         signoutRedirect({'id_token_hint': localStorage.getItem('id_token')});
     }
 
+    function handleSettingsClick() {
+        window.location.href = `${process.env.REACT_APP_AUTHORITY_URL}/Auth/ChangePassword?returnUrl=${encodeURIComponent(window.location.origin)}`;
+    }
+
     return (
         <header className='App_header'>
                     
             <div className='header_block'>
                             
-                <img className='icon' src={logoImg}/>
+                <img className='icon' alt='logo' src={logoImg}/>
 
                 <MenuButtons role={role}/>
                                 
@@ -30,7 +34,7 @@ function Header() {
                     {
                         isAuthenticated
                         ?
-                        <LogoutButton onClick={handleLogoutClick} name={name}/>
+                        <LogoutButton onClickLogout={handleLogoutClick} onClickSettings={handleSettingsClick} name={name}/>
                         :
                         <LoginButton onClick={handleLoginClick}/>
                     }

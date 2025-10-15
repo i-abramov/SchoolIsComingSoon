@@ -16,7 +16,6 @@ namespace SchoolIsComingSoon.WebAPI.Controllers
 {
     [ApiVersion("1.0")]
     [Produces("application/json")]
-    [Route("api/{version:apiVersion}/[controller]")]
     public class CommentController : BaseController
     {
         private readonly IMapper _mapper;

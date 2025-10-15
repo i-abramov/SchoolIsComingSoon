@@ -1,18 +1,17 @@
-import { Client, SubscriptionLookupDto } from '../api/api'; 
+import { Client } from '../api/api'; 
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../auth/auth-provider';
 import Post from './Post';
 import LockedPost from './LockedPost';
 
-const apiClient = new Client('https://localhost:44399');
+const apiClient = new Client(process.env.REACT_APP_SERVER_URL);
 
 function PostWithSub(props: any) {
-    const [subs, setSubs] = useState<SubscriptionLookupDto[]>([]);
-    const [postLVL, setPostLVL] = useState<number>(0);
+    const [postLVL, setPostLVL] = useState<number>(-1);
     const [postSubName, setPostSubName] = useState<string>('');
     const [currentLVL, setCurrentLVL] = useState<number>(0);
 
-    const { id, isAuthenticated } = useContext(AuthContext);
+    const { isAuthenticated } = useContext(AuthContext);
 
     useEffect(() => {
         async function getPostLVL() {
@@ -21,17 +20,11 @@ function PostWithSub(props: any) {
             setPostSubName(sub.name!);
         }
         getPostLVL();
-    }, []);
+    }, [props.post.postDto.subscriptionId]);
 
     useEffect(() => {
-        async function getSubs() {
-            let subs = await apiClient.getAllSubscriptions('1.0');
-            setSubs(subs.subscriptions!);
-        }
-        getSubs();
-
         async function getCurSubLVL() {
-            let curSub = await apiClient.getCurrentSubscription(id, '1.0');
+            let curSub = await apiClient.getCurrentSubscription('1.0');
             let sub = await apiClient.getSubscription(curSub.subscriptionId!, '1.0');
             setCurrentLVL(sub.lvl!);
         }
@@ -57,7 +50,16 @@ function PostWithSub(props: any) {
                         }
                     </>
                 :
-                    <Post post={props.post} role={props.role} setPostId={props.setPostId} isAllCommentsVisible={props.isAllCommentsVisible}/>
+                    <>
+                        {
+                            postLVL === -1
+                            ?
+                            <></>
+                            :
+                            <Post post={props.post} role={props.role} setPostId={props.setPostId} isAllCommentsVisible={props.isAllCommentsVisible}/>
+                        }
+                    </>
+                    
             }
         </>
     );

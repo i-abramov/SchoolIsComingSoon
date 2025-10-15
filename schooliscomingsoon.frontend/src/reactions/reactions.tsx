@@ -4,7 +4,7 @@ import likesImg from '../images/likes.png';
 import likePressedImg from '../images/like_pressed.png';
 import { AuthContext } from '../auth/auth-provider';
 
-const apiClient = new Client('https://localhost:44399');
+const apiClient = new Client(process.env.REACT_APP_SERVER_URL);
 
 function Reactions(props: any) {
     const [reactions, setReactions] = useState<ReactionLookupDto[] | undefined>(undefined);
@@ -56,9 +56,9 @@ function Reactions(props: any) {
             {
                 userReaction 
                 ?
-                <input type='image' className='like_button' src={likePressedImg} onClick={removeReaction}/>
+                <input type='image' className='like_button' alt='like button' src={likePressedImg} onClick={removeReaction}/>
                 :
-                <input type='image' className='like_button' src={likesImg} onClick={addReaction}/>
+                <input type='image' className='like_button' alt='like button' src={likesImg} onClick={addReaction}/>
             }
             <div className='post_footer_text'>{length}</div>
         </>

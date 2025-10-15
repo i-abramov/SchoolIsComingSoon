@@ -6,11 +6,19 @@ namespace SchoolIsComingSoon.Identity.Services
 {
     public class EmailService
     {
+        private readonly IConfiguration _configuration;
+
+        public EmailService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public async Task SendEmailAsync(string email, string subject, string message)
         {
-            var emailMessage = new MimeMessage();
+            var smtpSettings = _configuration.GetSection("Smtp");
 
-            emailMessage.From.Add(new MailboxAddress("Скоро в школу!", "info@schooliscomingsoon.ru"));
+            var emailMessage = new MimeMessage();
+            emailMessage.From.Add(new MailboxAddress("Скоро в школу!", smtpSettings["From"]));
             emailMessage.To.Add(new MailboxAddress("", email));
             emailMessage.Subject = subject;
             emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
@@ -18,14 +26,13 @@ namespace SchoolIsComingSoon.Identity.Services
                 Text = message
             };
 
-            using (var client = new SmtpClient())
-            {
-                await client.ConnectAsync("smtp.timeweb.ru", 2525, SecureSocketOptions.StartTls);
-                await client.AuthenticateAsync("info@schooliscomingsoon.ru", "password");
-                await client.SendAsync(emailMessage);
+            using var client = new SmtpClient();
+            client.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
-                await client.DisconnectAsync(true);
-            }
+            await client.ConnectAsync(smtpSettings["Host"], int.Parse(smtpSettings["Port"]), SecureSocketOptions.SslOnConnect);
+            await client.AuthenticateAsync(smtpSettings["User"], smtpSettings["Password"]);
+            await client.SendAsync(emailMessage);
+            await client.DisconnectAsync(true);
         }
     }
 }

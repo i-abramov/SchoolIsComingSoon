@@ -11,7 +11,7 @@ const SignoutOidc: FC<{}> = () => {
         };
         signoutAsync();
     }, [navigate]);
-    return <div>Redirecting...</div>;
+    return <div className='error_block'>Переадресация...</div>;
 };
 
 export default SignoutOidc;

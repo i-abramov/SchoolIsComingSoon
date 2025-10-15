@@ -11,7 +11,7 @@ import BackA from '../images/backa.png'
 import BackI from '../images/backi.png'
 import { useNavigate } from 'react-router-dom';
 
-const apiClient = new Client('https://localhost:44399');
+const apiClient = new Client(process.env.REACT_APP_SERVER_URL);
 
 function Post(props: any) {
     const [imageURL, setImageURL] = useState(props.post.preview);
@@ -54,7 +54,7 @@ function Post(props: any) {
     
     const handleOnClickBack = () => {
         if (currentId !== 0) {
-            if (currentId == 1) {
+            if (currentId === 1) {
                 setLeftButtonImage(BackI);
             }
 
@@ -66,7 +66,7 @@ function Post(props: any) {
 
     const handleOnClickNext = () => {
         if (currentId !== imageList.length - 1) {
-            if (currentId == imageList.length - 2) {
+            if (currentId === imageList.length - 2) {
                 setRightButtonImage(NextI);
             }
 
@@ -121,7 +121,8 @@ function Post(props: any) {
                 ?
                     <div className='post_image_block'>
                         <img
-                            src={imageURL != '' ? imageURL : EmptyPreview}
+                            src={imageURL !== '' ? imageURL : EmptyPreview}
+                            alt='post preview'
                             className='post_image_preview'
                         />
                         <button
@@ -132,6 +133,7 @@ function Post(props: any) {
                         >
                             <img
                                 src={leftButtonImage}
+                                alt='post arrow'
                                 className='post_image_arrow'
                             />
                         </button>
@@ -144,6 +146,7 @@ function Post(props: any) {
                         >
                             <img
                                 src={rightButtonImage}
+                                alt='post arrow'
                                 className='post_image_arrow'
                             />
                         </button>
@@ -153,6 +156,7 @@ function Post(props: any) {
                 :
                     <img
                         src={EmptyPreview}
+                        alt='post preview empty'
                         className='post_image_preview_empty'
                     />
             }
@@ -170,7 +174,7 @@ function Post(props: any) {
                                 key={file.name}
                                 onClick={() => handleDownload(file)}>
                                 <div className='file_container'>
-                                    <img className='file_icon' src={FileImg}/>
+                                    <img className='file_icon' alt='file icon' src={FileImg}/>
                                     <div className='file_name'><p className='file_name_text'>{file.name}</p></div>
                                 </div>
                             </button>

@@ -196,11 +196,8 @@ export class Client extends ClientBase {
         return Promise.resolve<void>(null as any);
     }
 
-    getCurrentSubscription(userId: string, version: string): Promise<CurrentSubscriptionVm> {
-        let url_ = this.baseUrl + "/api/{version}/CurrentSubscription/{userId}";
-        if (userId === undefined || userId === null)
-            throw new globalThis.Error("The parameter 'userId' must be defined.");
-        url_ = url_.replace("{userId}", encodeURIComponent("" + userId));
+    getCurrentSubscription(version: string): Promise<CurrentSubscriptionVm> {
+        let url_ = this.baseUrl + "/api/{version}/CurrentSubscription";
         if (version === undefined || version === null)
             throw new globalThis.Error("The parameter 'version' must be defined.");
         url_ = url_.replace("{version}", encodeURIComponent("" + version));

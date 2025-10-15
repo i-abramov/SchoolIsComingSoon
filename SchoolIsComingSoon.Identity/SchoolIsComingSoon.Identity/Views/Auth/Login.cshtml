@@ -1,24 +1,35 @@
 ﻿@model LoginViewModel
 <head>
-    <link href=@Url.Content("~/Styles/app.css") rel="stylesheet" type="text/css"/>
+    <link href="@Url.Content("~/Styles/app.css")" rel="stylesheet" type="text/css" />
 </head>
 <div class="panel">
     <form asp-controller="Auth" asp-action="Login" method="post">
         <input type="hidden" asp-for="ReturnUrl" />
         <div class="header">Вход</div>
+
         <div class="block">
             <label>Логин</label>
             <input asp-for="Username" class="input" />
             <span asp-validation-for="Username"></span>
         </div>
+
         <div class="block">
             <label>Пароль</label>
-            <input asp-for="Password" class="input" />
+            <input asp-for="Password" class="input" type="password" />
             <span asp-validation-for="Password"></span>
         </div>
+
         <div class="block">
             <button type="submit" class="button">Войти</button>
         </div>
-        <a asp-controller="Auth" asp-action="Register" asp-route-returnUrl="@Model.ReturnUrl" class="switch-button">Регистрация</a>
+
+        <div class="links-row">
+            <a asp-controller="Auth" asp-action="Register" asp-route-returnUrl="@Model.ReturnUrl" class="switch-link">
+                Регистрация
+            </a>
+            <a asp-controller="Auth" asp-action="CheckEmail" asp-route-returnUrl="@Model.ReturnUrl" class="switch-link">
+                Забыли пароль?
+            </a>
+        </div>
     </form>
 </div>

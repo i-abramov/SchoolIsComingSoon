@@ -363,6 +363,13 @@ MigrationBackup/
 FodyWeavers.xsd
 /SchoolIsComingSoon.Backend/SchoolIsComingSoon.WebAPI/SchoolIsComingSoon.db*
 /SchoolIsComingSoon.Backend/SchoolIsComingSoon.WebAPI/SchoolIsComingSoonWebAppLog*
+/SchoolIsComingSoon.Backend/SchoolIsComingSoon.WebAPI/appsettings.json
+/SchoolIsComingSoon.Backend/SchoolIsComingSoon.WebAPI/appsettings.Production.json
+/SchoolIsComingSoon.Backend/SchoolIsComingSoon.Persistence/Migrations*
+
 /SchoolIsComingSoon.Identity/SchoolIsComingSoon.Identity/SchoolIsComingSoon.Auth.db*
-/SchoolIsComingSoon.Identity/SchoolIsComingSoon.Identity/tempkey.jwk
+/SchoolIsComingSoon.Identity/SchoolIsComingSoon.Identity/tempkey*
 /SchoolIsComingSoon.Identity/SchoolIsComingSoon.Identity/keys*
+/SchoolIsComingSoon.Identity/SchoolIsComingSoon.Identity/appsettings.json
+/SchoolIsComingSoon.Identity/SchoolIsComingSoon.Identity/Migrations*
+/SchoolIsComingSoon.Identity/SchoolIsComingSoon.Identity/appsettings.Production.json

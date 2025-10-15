@@ -1,82 +1,117 @@
 using Duende.IdentityServer.Services;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using SchoolIsComingSoon.Identity;
 using SchoolIsComingSoon.Identity.Data;
 using SchoolIsComingSoon.Identity.Models;
 using SchoolIsComingSoon.Identity.Services;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetValue<string>("DbConnection");
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables();
+
+var connectionString = builder.Configuration.GetConnectionString("DbConnection")
+    ?? builder.Configuration["DbConnection"];
+
+var issuerUri = builder.Configuration["IdentityServer:IssuerUri"];
+var clientUrl = builder.Configuration["ClientURL"] ?? "https://schooliscomingsoon.ru";
 
 builder.Services.AddDbContext<AuthDbContext>(options =>
 {
-    options.UseSqlite(connectionString);
+    options.UseNpgsql(connectionString);
 });
 
-builder.Services.AddIdentity<AppUser, IdentityRole>(config =>
+builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
-    config.Password.RequiredLength = 8;
-    config.Password.RequireDigit = true;
-    config.Password.RequireNonAlphanumeric = false;
-    config.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 8;
+    options.Password.RequireDigit = true;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
 })
-    .AddEntityFrameworkStores<AuthDbContext>()
-    .AddDefaultTokenProviders();
+.AddEntityFrameworkStores<AuthDbContext>()
+.AddDefaultTokenProviders();
 
-builder.Services.AddIdentityServer()
-    .AddAspNetIdentity<AppUser>()
-    .AddInMemoryApiResources(Configuration.ApiResources)
-    .AddInMemoryIdentityResources(Configuration.IdentityResources)
-    .AddInMemoryApiScopes(Configuration.ApiScopes)
-    .AddInMemoryClients(Configuration.Clients)
-    .AddDeveloperSigningCredential()
-    .AddProfileService<ProfileService>();
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo("/var/www/sics/data-protection-keys"))
+    .SetApplicationName("SICS.Identity");
+
+var keyPath = Path.Combine(builder.Environment.ContentRootPath, "tempkey.rsa");
+
+builder.Services.AddIdentityServer(options =>
+{
+    options.IssuerUri = issuerUri;
+    options.KeyManagement.Enabled = true;
+})
+.AddDeveloperSigningCredential(persistKey: true, filename: keyPath)
+.AddAspNetIdentity<AppUser>()
+.AddInMemoryIdentityResources(Configuration.IdentityResources)
+.AddInMemoryApiResources(Configuration.ApiResources)
+.AddInMemoryApiScopes(Configuration.ApiScopes)
+.AddInMemoryClients(Configuration.Clients(clientUrl))
+.AddProfileService<ProfileService>();
 
 builder.Services.AddScoped<IProfileService, ProfileService>();
-
 builder.Services.AddScoped<DbInitializer>();
+builder.Services.AddScoped<EmailService>();
 
-builder.Services.ConfigureApplicationCookie(config =>
+builder.Services.ConfigureApplicationCookie(options =>
 {
-    config.Cookie.Name = "SchoolIsComingSoon.Identity.Cookie";
-    config.LoginPath = "/Auth/Login";
-    config.LogoutPath = "/Auth/Logout";
+    options.Cookie.Name = "SchoolIsComingSoon.Identity.Cookie";
+    options.LoginPath = "/Auth/Login";
+    options.LogoutPath = "/Auth/Logout";
 });
 
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
+var stylesPath = Path.Combine(builder.Environment.ContentRootPath, "Styles");
+if (Directory.Exists(stylesPath))
+{
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(stylesPath),
+        RequestPath = "/styles"
+    });
+}
+app.UseStaticFiles();
+
 using (var scope = app.Services.CreateScope())
 {
-    var serviceProvider = scope.ServiceProvider;
+    var sp = scope.ServiceProvider;
     try
     {
-        var context = serviceProvider.GetRequiredService<AuthDbContext>();
-        var dbInitializer = serviceProvider.GetRequiredService<DbInitializer>();
-        dbInitializer.Initialize(context);
+        var context = sp.GetRequiredService<AuthDbContext>();
+        var initializer = sp.GetRequiredService<DbInitializer>();
+        await initializer.InitializeAsync(context);
     }
-    catch (Exception exception)
+    catch (Exception ex)
     {
-        var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
-        logger.LogError(exception, "An error occured while app initialization");
+        var logger = sp.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while initializing the database");
     }
 }
 
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(builder.Environment.ContentRootPath, "Styles")),
-    RequestPath = "/styles"
-});
 app.UseRouting();
 app.UseIdentityServer();
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapDefaultControllerRoute();
-});
+app.UseAuthorization();
+app.MapDefaultControllerRoute();
 
-app.Run();
+var clients = app.Services.GetRequiredService<Duende.IdentityServer.Stores.IClientStore>();
+var client = await clients.FindClientByIdAsync("schooliscomingsoon-web-app");
+var allow = client?.AllowOfflineAccess ?? false;
+app.Logger.LogInformation(">>> RUNTIME Client.AllowOfflineAccess = {AllowOfflineAccess}", allow);
+
+await app.RunAsync();

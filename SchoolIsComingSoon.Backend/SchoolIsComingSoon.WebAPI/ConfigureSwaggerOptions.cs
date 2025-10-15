@@ -10,13 +10,17 @@ namespace SchoolIsComingSoon.WebAPI
     {
         private readonly IApiVersionDescriptionProvider _provider;
 
-        public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider) =>
+        public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider)
+        {
             _provider = provider;
+        }
+
         public void Configure(SwaggerGenOptions options)
         {
             foreach (var description in _provider.ApiVersionDescriptions)
             {
                 var apiVersion = description.ApiVersion.ToString();
+
                 options.SwaggerDoc(description.GroupName,
                     new OpenApiInfo
                     {
@@ -24,16 +28,16 @@ namespace SchoolIsComingSoon.WebAPI
                         Title = $"SchoolIsComingSoon API {apiVersion}"
                     });
 
-                options.AddSecurityDefinition($"AuthToken {apiVersion}",
-                    new OpenApiSecurityScheme
-                    {
-                        In = ParameterLocation.Header,
-                        Type = SecuritySchemeType.Http,
-                        BearerFormat = "JWT",
-                        Scheme = "bearer",
-                        Name = "Authorization",
-                        Description = "Authorization token"
-                    });
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "Введите токен JWT в формате: Bearer {token}",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT"
+                });
+
 
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
@@ -43,10 +47,10 @@ namespace SchoolIsComingSoon.WebAPI
                             Reference = new OpenApiReference
                             {
                                 Type = ReferenceType.SecurityScheme,
-                                Id = $"AuthToken {apiVersion}"
+                                Id = "Bearer"
                             }
                         },
-                        new string[] { }
+                        Array.Empty<string>()
                     }
                 });
 

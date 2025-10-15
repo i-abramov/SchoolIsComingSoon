@@ -1,4 +1,6 @@
+import { useEffect, useRef, useState } from 'react';
 import logoutImg from '../images/logout.png';
+import settingsImg from '../images/settings.png';
 
 export function LoginButton(props: any) {
     return (
@@ -11,11 +13,52 @@ export function LoginButton(props: any) {
 }
   
 export function LogoutButton(props: any) {
+    const [showMenu, setShowMenu] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
+
+    function toggleMenu() {
+        setShowMenu(prev => !prev);
+    }
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setShowMenu(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
     return (
-    <div className='header_auth_panel'>
-		<a className='username'>{props.name}</a>
-		<input type='image' className='logout_button' src={logoutImg} onClick={props.onClick}/>
-	</div>
+        <div className='header_auth_panel'>
+            <span className='username'>{props.name}</span>
+
+            <div className="settings-container" ref={menuRef}>
+                <input
+                    type='image'
+                    alt='settings button'
+                    className='settings_button'
+                    src={settingsImg}
+                    onClick={toggleMenu}
+                />
+                {showMenu && (
+                    <div className="dropdown-menu">
+                        <button className="dropdown-item" onClick={props.onClickSettings}>
+                            Сменить пароль
+                        </button>
+                    </div>
+                )}
+            </div>
+
+            <input
+                type='image'
+                alt='logout button'
+                className='logout_button'
+                src={logoutImg}
+                onClick={props.onClickLogout}
+            />
+        </div>
     );
 }
 

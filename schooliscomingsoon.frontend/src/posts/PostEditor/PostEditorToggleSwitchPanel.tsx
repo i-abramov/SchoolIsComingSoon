@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Client, SubscriptionLookupDto } from "../../api/api";
 
-const apiClient = new Client('https://localhost:44399');
+const apiClient = new Client(process.env.REACT_APP_SERVER_URL);
 
 export default function PostEditorToggleSwitchPanel(props: any) {
     const [firstLVLSubChecked, setFirstLVLSubChecked] = useState(false);
@@ -58,13 +58,13 @@ export default function PostEditorToggleSwitchPanel(props: any) {
     
     useEffect(() => {  
         if (props.subscriptions.length > 0) {
-            if (props.subscriptions[1].id == props.subscriptionId) {
+            if (props.subscriptions[1].id === props.subscriptionId) {
                 setFirstLVLSubChecked(true);
             }
-            if (props.subscriptions[2].id == props.subscriptionId) {
+            if (props.subscriptions[2].id === props.subscriptionId) {
                 setSecondLVLSubChecked(true);
             }
-            if (props.subscriptions[3].id == props.subscriptionId) {
+            if (props.subscriptions[3].id === props.subscriptionId) {
                 setThirdLVLSubChecked(true);
             }
         }

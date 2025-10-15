@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import PostEditorFilePanel from './PostEditorFilePanel';
-import { Client, SubscriptionListVm, SubscriptionLookupDto } from '../../api/api';
+import { Client, SubscriptionLookupDto } from '../../api/api';
 import PostEditorTagPanel from './PostEditorTagPanel';
 import PostEditorTextArea from './PostEditorTextarea';
 import PostEditorToolbar from './PostEditorToolbar';
@@ -34,7 +34,7 @@ interface PostProps {
     postId: string;
 }
 
-const apiClient = new Client('https://localhost:44399');
+const apiClient = new Client(process.env.REACT_APP_SERVER_URL);
 
 const filesFromFileReader: FileData[] = [];
 
@@ -50,14 +50,14 @@ export default function PostEditorPage({ onSubmit, postId }: PostProps) {
     
     const readFiles = (files: any) => {
         if (files && files.length) {
-            if (files[0].type == 'image/png' || files[0].type == 'image/jpeg' || files[0].type == 'image/bmp') {
-                if (imageList.length == 5) {
+            if (files[0].type === 'image/png' || files[0].type === 'image/jpeg' || files[0].type === 'image/bmp') {
+                if (imageList.length === 5) {
                     alert('Превышен лимит фотографий для поста!');
                     return;
                 }
             }
             else {
-                if (fileList.length == 5) {
+                if (fileList.length === 5) {
                     alert('Превышен лимит файлов для поста!');
                     return;
                 }
@@ -77,7 +77,7 @@ export default function PostEditorPage({ onSubmit, postId }: PostProps) {
         let images: FileData[] = [];
     
         for (let i = 0; i < filesFromFileReader.length; i++) {
-            if (filesFromFileReader[i].fileType == 'image/png' || filesFromFileReader[i].fileType == 'image/jpeg' || filesFromFileReader[i].fileType == 'image/bmp') {
+            if (filesFromFileReader[i].fileType === 'image/png' || filesFromFileReader[i].fileType === 'image/jpeg' || filesFromFileReader[i].fileType === 'image/bmp') {
                 images.push(filesFromFileReader[i]);
             }
             else {
@@ -103,11 +103,11 @@ export default function PostEditorPage({ onSubmit, postId }: PostProps) {
     const removeImage = (id: number) => {
         let images: FileData[] = [];
                     
-        let index = filesFromFileReader.findIndex(file => file.id == id);
+        let index = filesFromFileReader.findIndex(file => file.id === id);
         filesFromFileReader.splice(index, 1);
             
         for (let i = 0; i < filesFromFileReader.length; i++) {
-            if (filesFromFileReader[i].fileType == 'image/png' || filesFromFileReader[i].fileType == 'image/jpeg'  || filesFromFileReader[i].fileType == 'image/bmp') {
+            if (filesFromFileReader[i].fileType === 'image/png' || filesFromFileReader[i].fileType === 'image/jpeg'  || filesFromFileReader[i].fileType === 'image/bmp') {
                 images.push(filesFromFileReader[i]);
             }
         }
@@ -118,11 +118,11 @@ export default function PostEditorPage({ onSubmit, postId }: PostProps) {
     const removeFile = (id: number) => {
         let files: FileData[] = [];
             
-        let index = filesFromFileReader.findIndex(file => file.id == id);
+        let index = filesFromFileReader.findIndex(file => file.id === id);
         filesFromFileReader.splice(index, 1);
     
         for (let i = 0; i < filesFromFileReader.length; i++) {
-            if (filesFromFileReader[i].fileType != 'image/png' && filesFromFileReader[i].fileType != 'image/jpeg' && filesFromFileReader[i].fileType != 'image/bmp') {
+            if (filesFromFileReader[i].fileType !== 'image/png' && filesFromFileReader[i].fileType !== 'image/jpeg' && filesFromFileReader[i].fileType !== 'image/bmp') {
                 files.push(filesFromFileReader[i]);
             }
         }
@@ -139,7 +139,7 @@ export default function PostEditorPage({ onSubmit, postId }: PostProps) {
         const form = event.currentTarget;
         const { text } = form;
 
-        if (text.value == '') {
+        if (text.value === '') {
             alert('Введите текст для создания поста!');
         }
         else {
@@ -158,7 +158,7 @@ export default function PostEditorPage({ onSubmit, postId }: PostProps) {
             const post = await apiClient.getPost(postId, '1.0');
     
             let categories = '';
-            if (post.categories != undefined) {
+            if (post.categories !== undefined) {
                 for (let i = 0; i < post.categories.length; i++) {
                     categories += post.categories[i] + '\n';
                 }
@@ -207,10 +207,10 @@ export default function PostEditorPage({ onSubmit, postId }: PostProps) {
             setFileList(files);
         }
 
-        if (postId != '') {
+        if (postId !== '') {
             getPostData();
         }
-    }, []);
+    }, [postId]);
 
     return (
         <div className='post'>
@@ -231,7 +231,7 @@ export default function PostEditorPage({ onSubmit, postId }: PostProps) {
                 </div>
                         
                 <div className='button_panel'>
-                    {postId != ''
+                    {postId !== ''
                     ?
                         <>
                             <input type='button' value='Отмена' className='cancel_button' onClick={handleOnClickCancel}/>

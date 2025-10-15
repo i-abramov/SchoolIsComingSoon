@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace SchoolIsComingSoon.WebAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("api/{version:apiVersion}/[controller]")]
     public abstract class BaseController : ControllerBase
     {
-        private IMediator _mediator;
         protected IMediator Mediator =>
             _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
+        private IMediator _mediator;
     }
 }

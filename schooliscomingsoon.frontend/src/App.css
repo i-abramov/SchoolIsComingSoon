@@ -45,18 +45,6 @@ button {
     display: flex;
     width: 400px;
 }
-.username {
-	color: white;
-    font-size: 24px;
-    margin: 35px 0;
-    padding: 5px 10px 5px 10px;
-}
-.logout_button {
-    margin: 35px 0;
-    height: 35px;
-    width: 45px;
-    padding: 5px 10px 5px 10px;
-}
 .header_search {
     margin-top: auto;
     margin-bottom: auto;
@@ -761,4 +749,91 @@ input:checked + .slider:before {
     color: white;
     font-size: 18px;
     margin-top: 10px;
+}
+
+.comment_wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.error_block {
+    width: 100%;
+    height: auto;
+    color: white;
+    font-size: 18px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal; 
+}
+
+
+
+
+
+
+
+
+
+.header_auth_panel {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.settings-container {
+    position: relative;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 70px;
+    right: 0;
+    background-color: #1F262A;
+    border: 1px solid #b3b3b3;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    color: white;
+    min-width: 180px;
+    z-index: 1000;
+    padding: 5px 0;
+}
+
+.dropdown-item {
+    padding: 10px 15px;
+    background-color: #1F262A;
+    border: none;
+    color: white;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.dropdown-item:hover {
+    background-color: #0090ff;
+}
+
+.logout_button {
+    height: 35px;
+    width: 45px;
+    padding: 5px 10px 5px 10px;
+    margin-top: 0;
+}
+.settings_button {
+    cursor: pointer;
+    height: 35px;
+    width: 45px;
+    padding: 5px 10px 5px 10px;
+    object-fit: contain;
+    margin: 35px 0;
+}
+.username {
+    font-size: 24px;
+	color: white;
+    white-space: nowrap;
+    margin: 35px 0;
+    padding: 5px 10px 5px 10px;
 }

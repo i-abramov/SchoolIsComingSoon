@@ -22,7 +22,7 @@ function PostEditoFilePanel(props: any) {
                     <div className='files_panel'>
                         {fileList!.map((file: FileData) => (
                             <div className='file_container'  key={file.name}>
-                                <img className='file_icon' src={FileImg}/>
+                                <img className='file_icon' alt='file icon' src={FileImg}/>
                                 <div className='file_name'><p className='file_name_text'>{file.name}</p></div>
                                 <button
                                     className='file_close_button'
@@ -31,6 +31,7 @@ function PostEditoFilePanel(props: any) {
                                 >
                                     <img
                                         src={RemoveImg}
+                                        alt='file close'
                                         className='file_close'
                                     />
                                 </button>
