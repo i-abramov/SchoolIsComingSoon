@@ -10,3 +10,5 @@ SchoolIsComingSoon - веб-приложение для просмотра/пу�
 - ASP.NET Web API
 - ASP.NET MVC + IdentityServer
 - Клиент React ts
+
+Сайт работает по адресу https://schooliscomingsoon.ru/
