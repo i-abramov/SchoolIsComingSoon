@@ -45,10 +45,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({
     const userManager = useRef<UserManager>(manager);
 
     useEffect(() => {
-        console.log('AuthProvider initialized.');
-
         const onUserLoaded = (user: User) => {
-            console.log('User loaded:', user);
             setAuthHeader(user.access_token);
             setIdToken(user.id_token);
             setRefreshToken(user.refresh_token ?? '');
@@ -61,12 +58,9 @@ export const AuthProvider: FC<AuthProviderProps> = ({
             setRole(localStorage.getItem('user_role') || '');
             setName(localStorage.getItem('user_name') || '');
             setAuth(true);
-
-            console.log('Tokens saved. Access and refresh tokens are ready.');
         };
 
         const onUserUnloaded = () => {
-            console.warn('User unloaded — logging out.');
             setAuthHeader(null);
             setRefreshToken(null);
             setUserRole(null);
@@ -76,7 +70,6 @@ export const AuthProvider: FC<AuthProviderProps> = ({
         };
 
         const onAccessTokenExpiring = async () => {
-            console.warn('Access token expiring — attempting silent renew...');
             try {
                 const newUser = await userManager.current?.signinSilent();
                 if (newUser) {
@@ -86,22 +79,18 @@ export const AuthProvider: FC<AuthProviderProps> = ({
                     setRefreshToken(newUser.refresh_token ?? '');
                     localStorage.setItem('access_token', newUser.access_token);
                     localStorage.setItem('refresh_token', newUser.refresh_token ?? '');
-                    console.log('Silent renew complete, tokens updated.');
                 }
             } catch (error) {
-                console.error('Silent renew failed. Redirecting to login...', error);
                 localStorage.setItem('isAuthenticated', 'false');
                 await signinRedirect();
             }
         };
 
         const onAccessTokenExpired = async () => {
-            console.warn('Access token expired — redirecting to login.');
             await signinRedirect();
         };
 
         const onUserSignedOut = async () => {
-            console.warn('User signed out from IdentityServer.');
             localStorage.setItem('isAuthenticated', 'false');
             await signinRedirect();
         };
@@ -116,10 +105,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({
             try {
                 const user = await userManager.current?.getUser();
                 if (user && !user.expired) {
-                    console.log('Restored session from storage.');
                     onUserLoaded(user);
-                } else {
-                    console.log('No active session found.');
                 }
             } catch (err) {
                 console.error('Failed to restore session:', err);

@@ -29,6 +29,10 @@ function RightMenu() {
         getCurrentSub();
     }, [isAuthenticated]);
 
+    const handleOnClickBuySubscription = () => {
+        window.location.href = '/purchase';
+    };
+
     return (
         <div className="right_menu">
             <div>Подписки:</div>
@@ -54,6 +58,7 @@ function RightMenu() {
                             Осталось до окончания подписки: {currentSub.expiresAfter}
                         </div>
                     </div>
+                    <input className="buy_subscription_button" type="button" value="Купить подписку" onClick={handleOnClickBuySubscription}></input>
                 </>
             )}
         </div>
